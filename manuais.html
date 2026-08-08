@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-MZ">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Inatro Pro - Manuais</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: #CBD5E1; display: flex; justify-content: center; min-height: 100dvh; }
+        .app-container { width: 100%; max-width: 600px; min-height: 100dvh; background-color: #F8FAFC; display: flex; flex-direction: column; padding-bottom: 40px; box-shadow: 0 0 20px rgba(0,0,0,0.1); }
+
+        .top-section { background-color: #0F172A; color: #FFFFFF; border-radius: 0 0 24px 24px; padding: 24px 24px 30px; margin-bottom: 24px; }
+        .btn-back { color: #94A3B8; text-decoration: none; font-size: 1rem; display: inline-flex; align-items: center; gap: 8px; margin-bottom: 20px; }
+        .header-title { font-size: 1.5rem; font-weight: 700; color: #F8FAFC; margin-bottom: 8px; }
+        .header-subtitle { font-size: 0.9rem; color: #94A3B8; line-height: 1.5; }
+
+        .content-section { padding: 0 24px; flex: 1; }
+        .manual-card { background: #FFFFFF; border-radius: 12px; padding: 20px; border: 1px solid #E2E8F0; display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); transition: transform 0.2s; }
+        .manual-card:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(0,0,0,0.05); }
+        
+        .manual-info { display: flex; align-items: center; gap: 16px; }
+        .icon-box { width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; flex-shrink: 0; background: #EFF6FF; color: #2563EB; }
+        
+        .manual-text h3 { font-size: 1rem; font-weight: 600; color: #1E293B; margin-bottom: 4px; }
+        .manual-text p { font-size: 0.75rem; color: #64748B; margin-bottom: 8px; }
+        .badge-pdf { font-size: 0.65rem; background: #FEF2F2; color: #EF4444; padding: 2px 8px; border-radius: 6px; font-weight: 700; display: inline-block; }
+
+        .btn-download { background: #2563EB; color: #FFFFFF; border: none; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; text-decoration: none; transition: background 0.2s; }
+        .btn-download:hover { background: #1D4ED8; }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <div class="top-section">
+        <a href="javascript:history.back()" class="btn-back"><i class="fas fa-arrow-left"></i> Voltar</a>
+        <h1 class="header-title">Manuais Oficiais</h1>
+        <p class="header-subtitle">Descarregue ou visualize os manuais de estudo oficiais para preparação teórica em Moçambique.</p>
+    </div>
+
+    <div class="content-section">
+        <div class="manual-card">
+            <div class="manual-info">
+                <div class="icon-box"><i class="fas fa-book"></i></div>
+                <div class="manual-text">
+                    <h3>Código de Estrada</h3>
+                    <p>Legislação rodoviária completa e atualizada.</p>
+                    <span class="badge-pdf">PDF &bull; 15 MB</span>
+                </div>
+            </div>
+            <a href="#" class="btn-download" onclick="alert('A descarregar manual...')"><i class="fas fa-download"></i></a>
+        </div>
+
+        <div class="manual-card">
+            <div class="manual-info">
+                <div class="icon-box" style="background: #ECFDF5; color: #10B981;"><i class="fas fa-shield-alt"></i></div>
+                <div class="manual-text">
+                    <h3>Condução Defensiva</h3>
+                    <p>Técnicas avançadas de prevenção de acidentes.</p>
+                    <span class="badge-pdf" style="background: #ECFDF5; color: #10B981;">PDF &bull; 8 MB</span>
+                </div>
+            </div>
+            <a href="#" class="btn-download" onclick="alert('A descarregar manual...')"><i class="fas fa-download"></i></a>
+        </div>
+
+        <div class="manual-card">
+            <div class="manual-info">
+                <div class="icon-box" style="background: #FFFBEB; color: #F59E0B;"><i class="fas fa-wrench"></i></div>
+                <div class="manual-text">
+                    <h3>Noções de Mecânica</h3>
+                    <p>Guia prático sobre componentes do veículo.</p>
+                    <span class="badge-pdf" style="background: #FFFBEB; color: #D97706;">PDF &bull; 10 MB</span>
+                </div>
+            </div>
+            <a href="#" class="btn-download" onclick="alert('A descarregar manual...')"><i class="fas fa-download"></i></a>
+        </div>
+    </div>
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        if (!localStorage.getItem('usuarioLogado')) window.location.href = 'index.html';
+    });
+</script>
+</body>
+</html>
