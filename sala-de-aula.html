@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="pt-MZ">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, interactive-widget=resizes-content">
+    <title>Inatro Pro - Sala de Aula</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        
+        body { 
+            background-color: #CBD5E1; 
+            color: #1E293B; 
+            display: flex; 
+            justify-content: center; 
+            min-height: 100dvh; 
+            margin: 0;
+            overflow-x: hidden;
+        }
+        
+        .app-container { 
+            width: 100%; 
+            max-width: 600px;
+            min-height: 100dvh; 
+            background-color: #F8FAFC; 
+            position: relative; 
+            display: flex; 
+            flex-direction: column; 
+            padding-bottom: 40px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+
+        /* Topo da Página */
+        .top-section { 
+            background-color: #0F172A; 
+            color: #FFFFFF; 
+            border-radius: 0 0 24px 24px; 
+            padding: 24px 24px 40px; /* Um pouco mais de padding para acomodar os stats */
+            box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.15); 
+            margin-bottom: 24px; 
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Efeito de brilho no fundo escuro */
+        .top-section::after {
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 150px;
+            height: 150px;
+            background: radial-gradient(circle, rgba(245,158,11,0.2) 0%, rgba(15,23,42,0) 70%);
+            border-radius: 50%;
+        }
+
+        .btn-back {
+            color: #94A3B8;
+            text-decoration: none;
+            font-size: 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 20px;
+            transition: color 0.2s;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .btn-back:hover { color: #FFFFFF; }
+
+        .header-title { font-size: 1.6rem; font-weight: 800; color: #F8FAFC; margin-bottom: 8px; position: relative; z-index: 2; }
+        .header-subtitle { font-size: 0.95rem; color: #94A3B8; line-height: 1.5; position: relative; z-index: 2; }
+
+        /* Estatísticas de Destaque */
+        .stats-container {
+            display: flex;
+            gap: 12px;
+            padding: 0 24px;
+            margin-bottom: 24px;
+            margin-top: -30px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .stat-box {
+            flex: 1;
+            background: #FFFFFF;
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            border: 1px solid #E2E8F0;
+        }
+
+        .stat-box.premium {
+            background: #FFFBEB;
+            border-color: #FDE68A;
+        }
+
+        .stat-num { font-size: 1.4rem; font-weight: 800; color: #2563EB; }
+        .stat-num.gold { color: #D97706; }
+        .stat-label { font-size: 0.75rem; color: #64748B; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px; }
+        .stat-label.gold { color: #B45309; }
+
+        /* Conteúdo Principal */
+        .content-section { padding: 0 24px; flex: 1; }
+        
+        .section-title { font-size: 1.1rem; font-weight: 700; color: #1E293B; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;}
+        .section-title i { color: #F59E0B; }
+
+        /* Cartão VIP (Exames do INATRO) */
+        .vip-card {
+            background: linear-gradient(145deg, #FFFFFF, #F8FAFC);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            border: 2px solid #FDE68A;
+            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.15);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .vip-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 4px; height: 100%;
+            background: #F59E0B;
+        }
+
+        .category-header { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; }
+        
+        .icon-wrapper {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            flex-shrink: 0;
+            background: #FEF3C7; 
+            color: #D97706;
+        }
+
+        .category-info h2 { font-size: 1.25rem; font-weight: 800; color: #1E293B; margin-bottom: 4px; }
+        
+        .badge-premium {
+            background: #FEF2F2;
+            color: #DC2626;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .category-desc {
+            font-size: 0.95rem;
+            color: #475569;
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+
+        .category-desc strong { color: #1E293B; }
+
+        .list-features {
+            list-style: none;
+            margin-bottom: 24px;
+        }
+        
+        .list-features li {
+            font-size: 0.85rem;
+            color: #64748B;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .list-features li i { color: #10B981; font-size: 1rem; }
+
+        /* Botão de Acesso Principal */
+        .btn-access {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            padding: 16px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1rem;
+            background: #2563EB;
+            color: #FFFFFF;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+        }
+
+        .btn-access:hover { 
+            background: #1D4ED8; 
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(37, 99, 235, 0.3);
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    
+    <!-- HEADER -->
+    <div class="top-section">
+        <a href="javascript:history.back()" class="btn-back"><i class="fas fa-arrow-left"></i> Voltar</a>
+        <h1 class="header-title">Sala de Aula</h1>
+        <p class="header-subtitle">Bem-vindo ao espaço reservado. Aqui encontra as simulações definitivas para garantir a sua carta de condução.</p>
+    </div>
+
+    <!-- ESTATÍSTICAS -->
+    <div class="stats-container">
+        <div class="stat-box premium">
+            <div class="stat-num gold">98.7%</div>
+            <div class="stat-label gold">Tx. de Ocorrência</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-num" style="color: #10B981;"><i class="fas fa-shield-check"></i> 100%</div>
+            <div class="stat-label">Atualizado</div>
+        </div>
+    </div>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <div class="content-section">
+        <div class="section-title">
+            <i class="fas fa-star"></i> Material Exclusivo
+        </div>
+
+        <!-- CARTÃO PRINCIPAL DOS EXAMES INATRO -->
+        <div class="vip-card">
+            <div class="category-header">
+                <div class="icon-wrapper">
+                    <i class="fas fa-desktop"></i>
+                </div>
+                <div class="category-info">
+                    <h2>Exames INATRO</h2>
+                    <span class="badge-premium"><i class="fas fa-fire"></i> Muito Frequentes</span>
+                </div>
+            </div>
+            
+            <p class="category-desc">
+                Esta é a secção mais importante da plataforma. Reunimos as <strong>perguntas exatas</strong> que saem de forma consistente nos computadores do sistema nacional de exames.
+            </p>
+
+            <ul class="list-features">
+                <li><i class="fas fa-check-circle"></i> Questões idênticas às do sistema oficial.</li>
+                <li><i class="fas fa-check-circle"></i> Otimizado para máxima retenção de memória.</li>
+                <li><i class="fas fa-check-circle"></i> O "segredo" para passar na primeira tentativa.</li>
+            </ul>
+
+            <!-- BOTÃO QUE LEVA PARA A PÁGINA DOS EXAMES DA SALA DE AULA -->
+            <a href="exames-oficiais.html" class="btn-access">
+                <i class="fas fa-play-circle"></i> Iniciar Exames Oficiais
+            </a>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // Validação simples de login
+    document.addEventListener("DOMContentLoaded", function() {
+        const userDataJson = localStorage.getItem('usuarioLogado');
+        if (!userDataJson) {
+            window.location.href = 'index.html'; 
+        }
+    });
+</script>
+
+</body>
+</html>
