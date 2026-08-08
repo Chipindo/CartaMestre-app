@@ -114,45 +114,47 @@
         </div>
     </div>
 
+    <!-- SCRIPT 1: LÓGICA DE UI (Isolada para funcionar sempre) -->
     <script>
-        // Supabase Init
-        const SUPABASE_URL = 'https://vhcioxwuombrqkhkipdh.supabase.co';
-        const SUPABASE_KEY = 'sb_publishable_XW2XlyZRe0IOotl6fpRXGQ_w6_-32AF';
-        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-        // Sistema de Notificações Profissional (Toasts)
-        function showNotification(message, type = 'success') {
-            const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-            toast.className = `toast ${type}`;
-            toast.innerHTML = type === 'success' ? `✓ ${message}` : `✕ ${message}`;
-            container.appendChild(toast);
-            
-            setTimeout(() => toast.classList.add('show'), 10);
-            setTimeout(() => {
-                toast.classList.remove('show');
-                setTimeout(() => toast.remove(), 300);
-            }, 3500);
-        }
-
-        // Lógica de Abas
         function switchTab(tabName) {
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.form-container').forEach(f => f.classList.remove('active'));
+            var tabs = document.querySelectorAll('.tab');
+            var forms = document.querySelectorAll('.form-container');
             
-            const indexes = { 'login': 0, 'register': 1, 'recover': 2 };
-            document.querySelectorAll('.tab')[indexes[tabName]].classList.add('active');
-            document.getElementById(`${tabName}-form`).classList.add('active');
+            for(var i = 0; i < tabs.length; i++) {
+                tabs[i].classList.remove('active');
+            }
+            for(var j = 0; j < forms.length; j++) {
+                forms[j].classList.remove('active');
+            }
             
-            if(tabName === 'recover') {
+            document.getElementById(tabName + '-form').classList.add('active');
+            
+            if (tabName === 'login') tabs[0].classList.add('active');
+            if (tabName === 'register') tabs[1].classList.add('active');
+            if (tabName === 'recover') {
+                tabs[2].classList.add('active');
                 document.getElementById('recover-step-1').style.display = 'block';
                 document.getElementById('recover-step-2').style.display = 'none';
             }
         }
 
-        // Botão Loading State
+        function showNotification(message, type) {
+            type = type || 'success';
+            var container = document.getElementById('toast-container');
+            var toast = document.createElement('div');
+            toast.className = 'toast ' + type;
+            toast.innerHTML = type === 'success' ? '✓ ' + message : '✕ ' + message;
+            container.appendChild(toast);
+            
+            setTimeout(function() { toast.classList.add('show'); }, 10);
+            setTimeout(function() {
+                toast.classList.remove('show');
+                setTimeout(function() { toast.remove(); }, 300);
+            }, 3500);
+        }
+
         function setLoading(btnId, isLoading, defaultText) {
-            const btn = document.getElementById(btnId);
+            var btn = document.getElementById(btnId);
             if (isLoading) {
                 btn.disabled = true;
                 btn.innerHTML = 'A processar...';
@@ -161,9 +163,31 @@
                 btn.innerHTML = defaultText;
             }
         }
+    </script>
+
+    <!-- SCRIPT 2: LÓGICA DE BASE DE DADOS (Supabase) -->
+    <script>
+        var _supabase = null;
+
+        // Tenta inicializar o Supabase com segurança
+        window.onload = function() {
+            try {
+                if (typeof supabase !== 'undefined') {
+                    const SUPABASE_URL = 'https://vhcioxwuombrqkhkipdh.supabase.co';
+                    const SUPABASE_KEY = 'sb_publishable_XW2XlyZRe0IOotl6fpRXGQ_w6_-32AF';
+                    _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+                } else {
+                    console.error("Script do Supabase não carregou. Falta de internet?");
+                }
+            } catch(e) {
+                console.error("Erro ao configurar Supabase:", e);
+            }
+        };
 
         // 1. FAZER LOGIN
         async function fazerLogin() {
+            if(!_supabase) return showNotification("Verifique a sua ligação à internet.", "error");
+
             const email = document.getElementById('login-email').value.trim();
             const senha = document.getElementById('login-senha').value.trim();
 
@@ -175,7 +199,7 @@
 
             setLoading('btn-login', false, 'Entrar na Conta');
 
-            if (error || data.length === 0) {
+            if (error || !data || data.length === 0) {
                 showNotification("E-mail ou senha incorretos.", "error");
             } else {
                 showNotification("Bem-vindo(a) de volta!", "success");
@@ -185,6 +209,8 @@
 
         // 2. CRIAR CONTA
         async function criarConta() {
+            if(!_supabase) return showNotification("Verifique a sua ligação à internet.", "error");
+
             const nome = document.getElementById('reg-nome').value.trim();
             const numero = document.getElementById('reg-numero').value.trim();
             const email = document.getElementById('reg-email').value.trim();
@@ -209,6 +235,8 @@
         // 3. RECUPERAR
         let userRecId = null;
         async function verificarRecuperacao() {
+            if(!_supabase) return showNotification("Verifique a sua ligação à internet.", "error");
+
             const nome = document.getElementById('rec-nome').value.trim();
             const numero = document.getElementById('rec-numero').value.trim();
             const email = document.getElementById('rec-email').value.trim();
@@ -221,7 +249,7 @@
 
             setLoading('btn-rec', false, 'Validar Identidade');
 
-            if (error || data.length === 0) {
+            if (error || !data || data.length === 0) {
                 showNotification("Nenhuma conta encontrada com estes dados.", "error");
             } else {
                 userRecId = data[0].id;
@@ -233,6 +261,8 @@
         }
 
         async function atualizarSenha(acao) {
+            if(!_supabase) return showNotification("Verifique a sua ligação à internet.", "error");
+
             if (acao === 'keep') {
                 showNotification("Acedendo à conta...", "success");
                 setTimeout(() => window.location.href = "home.html", 1000);
