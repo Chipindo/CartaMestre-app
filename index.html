@@ -114,7 +114,7 @@
         </div>
     </div>
 
-    <!-- SCRIPT 1: LÓGICA DE UI (Isolada para funcionar sempre) -->
+    <!-- SCRIPT 1: LÓGICA DE UI -->
     <script>
         function switchTab(tabName) {
             var tabs = document.querySelectorAll('.tab');
@@ -169,7 +169,6 @@
     <script>
         var _supabase = null;
 
-        // Tenta inicializar o Supabase com segurança
         window.onload = function() {
             try {
                 if (typeof supabase !== 'undefined') {
@@ -202,6 +201,9 @@
             if (error || !data || data.length === 0) {
                 showNotification("E-mail ou senha incorretos.", "error");
             } else {
+                // GRAVA OS DADOS DO USUÁRIO LOGADO NO NAVEGADOR
+                localStorage.setItem('usuarioLogado', JSON.stringify(data[0]));
+                
                 showNotification("Bem-vindo(a) de volta!", "success");
                 setTimeout(() => window.location.href = "home.html", 1000);
             }
@@ -220,20 +222,27 @@
 
             setLoading('btn-reg', true, 'Criar Minha Conta');
 
-            const { error } = await _supabase.from('Utilizadores').insert([{ nome, numero, email, senha }]);
+            // O .select() no fim faz com que os dados inseridos sejam retornados para nós
+            const { data, error } = await _supabase.from('Utilizadores').insert([{ nome, numero, email, senha }]).select();
 
             setLoading('btn-reg', false, 'Criar Minha Conta');
 
             if (error) {
                 showNotification("Este e-mail já pode estar registado.", "error");
             } else {
+                // GRAVA OS DADOS DO USUÁRIO CRIADO NO NAVEGADOR
+                if(data && data.length > 0) {
+                    localStorage.setItem('usuarioLogado', JSON.stringify(data[0]));
+                }
+                
                 showNotification("Conta criada com sucesso!", "success");
                 setTimeout(() => window.location.href = "home.html", 1500);
             }
         }
 
         // 3. RECUPERAR
-        let userRecId = null;
+        let userRecData = null; // Armazena todos os dados do usuário a recuperar
+        
         async function verificarRecuperacao() {
             if(!_supabase) return showNotification("Verifique a sua ligação à internet.", "error");
 
@@ -252,7 +261,8 @@
             if (error || !data || data.length === 0) {
                 showNotification("Nenhuma conta encontrada com estes dados.", "error");
             } else {
-                userRecId = data[0].id;
+                userRecData = data[0]; // Guarda os dados para usar depois
+                
                 document.getElementById('info-detalhes').innerHTML = `<b>${data[0].nome}</b><br>${data[0].email}`;
                 document.getElementById('recover-step-1').style.display = 'none';
                 document.getElementById('recover-step-2').style.display = 'block';
@@ -264,6 +274,8 @@
             if(!_supabase) return showNotification("Verifique a sua ligação à internet.", "error");
 
             if (acao === 'keep') {
+                // Loga com os dados já recuperados no passo 1
+                localStorage.setItem('usuarioLogado', JSON.stringify(userRecData));
                 showNotification("Acedendo à conta...", "success");
                 setTimeout(() => window.location.href = "home.html", 1000);
                 return;
@@ -274,12 +286,15 @@
 
             setLoading('btn-upd', true, 'Atualizar Senha e Entrar');
 
-            const { error } = await _supabase.from('Utilizadores').update({ senha: novaSenha }).eq('id', userRecId);
+            const { data, error } = await _supabase.from('Utilizadores').update({ senha: novaSenha }).eq('id', userRecData.id).select();
 
             if (error) {
                 setLoading('btn-upd', false, 'Atualizar Senha e Entrar');
                 showNotification("Erro ao atualizar.", "error");
             } else {
+                // Loga com os dados atualizados
+                localStorage.setItem('usuarioLogado', JSON.stringify(data && data.length > 0 ? data[0] : userRecData));
+                
                 showNotification("Senha atualizada com sucesso!", "success");
                 setTimeout(() => window.location.href = "home.html", 1500);
             }
