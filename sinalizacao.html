@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-MZ">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Inatro Pro - Sinalização</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: #CBD5E1; display: flex; justify-content: center; min-height: 100dvh; }
+        .app-container { width: 100%; max-width: 600px; min-height: 100dvh; background-color: #F8FAFC; display: flex; flex-direction: column; padding-bottom: 40px; box-shadow: 0 0 20px rgba(0,0,0,0.1); }
+
+        .top-section { background-color: #0F172A; color: #FFFFFF; border-radius: 0 0 24px 24px; padding: 24px 24px 40px; margin-bottom: 24px; }
+        .btn-back { color: #94A3B8; text-decoration: none; font-size: 1rem; display: inline-flex; align-items: center; gap: 8px; margin-bottom: 20px; }
+        .header-title { font-size: 1.5rem; font-weight: 700; color: #F8FAFC; margin-bottom: 8px; }
+        .header-subtitle { font-size: 0.9rem; color: #94A3B8; line-height: 1.5; }
+
+        .stats-container { display: flex; gap: 12px; padding: 0 24px; margin-bottom: 24px; margin-top: -30px; position: relative; }
+        .stat-box { flex: 1; background: #FFFFFF; border-radius: 12px; padding: 16px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.08); border: 1px solid #E2E8F0; }
+        .stat-num { font-size: 1.4rem; font-weight: 800; color: #EF4444; }
+        .stat-label { font-size: 0.75rem; color: #64748B; font-weight: 600; text-transform: uppercase; margin-top: 4px; }
+
+        .content-section { padding: 0 24px; flex: 1; }
+        .grid-sinais { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+        
+        .card-sinal { background: #FFFFFF; border-radius: 16px; padding: 20px 16px; text-align: center; text-decoration: none; border: 1px solid #E2E8F0; box-shadow: 0 2px 5px rgba(0,0,0,0.03); transition: transform 0.2s; }
+        .card-sinal:hover { transform: translateY(-3px); box-shadow: 0 8px 15px rgba(0,0,0,0.08); }
+        
+        .icon-sinal { width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; margin: 0 auto 12px; }
+        .ic-perigo { border: 4px solid #EF4444; color: #EF4444; background: #FEF2F2; border-radius: 12px; } /* Triângulo simulado */
+        .ic-proibicao { border: 4px solid #EF4444; color: #1E293B; background: #FFFFFF; } /* Círculo vermelho */
+        .ic-obrigacao { border: 4px solid #3B82F6; color: #FFFFFF; background: #3B82F6; } /* Círculo azul */
+        .ic-informacao { border: 4px solid #3B82F6; color: #FFFFFF; background: #3B82F6; border-radius: 8px; } /* Quadrado azul */
+
+        .card-sinal h3 { font-size: 0.95rem; font-weight: 700; color: #1E293B; margin-bottom: 6px; }
+        .card-sinal p { font-size: 0.75rem; color: #64748B; }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <div class="top-section">
+        <a href="javascript:history.back()" class="btn-back"><i class="fas fa-arrow-left"></i> Voltar</a>
+        <h1 class="header-title">Sinalização de Trânsito</h1>
+        <p class="header-subtitle">Catálogo completo dos sinais rodoviários de Moçambique, organizados por categoria.</p>
+    </div>
+
+    <div class="stats-container">
+        <div class="stat-box">
+            <div class="stat-num">4</div>
+            <div class="stat-label">Categorias</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-num" style="color:#2563EB;">+150</div>
+            <div class="stat-label">Sinais</div>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <div class="grid-sinais">
+            <a href="#" class="card-sinal">
+                <div class="icon-sinal ic-perigo"><i class="fas fa-exclamation"></i></div>
+                <h3>Sinais de Perigo</h3>
+                <p>Alertam para condições perigosas na via.</p>
+            </a>
+            <a href="#" class="card-sinal">
+                <div class="icon-sinal ic-proibicao"><i class="fas fa-ban"></i></div>
+                <h3>Sinais de Proibição</h3>
+                <p>Restrições e limites obrigatórios.</p>
+            </a>
+            <a href="#" class="card-sinal">
+                <div class="icon-sinal ic-obrigacao"><i class="fas fa-arrow-up"></i></div>
+                <h3>Sinais de Obrigação</h3>
+                <p>Comportamentos ou direções impostas.</p>
+            </a>
+            <a href="#" class="card-sinal">
+                <div class="icon-sinal ic-informacao"><i class="fas fa-parking"></i></div>
+                <h3>Sinais de Indicação</h3>
+                <p>Informações úteis e direções.</p>
+            </a>
+        </div>
+    </div>
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        if (!localStorage.getItem('usuarioLogado')) window.location.href = 'index.html';
+    });
+</script>
+</body>
+</html>
