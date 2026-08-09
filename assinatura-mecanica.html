@@ -176,12 +176,12 @@
         userData.assinatura_mecanica = expIso;
         localStorage.setItem('usuarioLogado', JSON.stringify(userData)); // Salva no celular
 
-        // Tentativa de sincronizar no Supabase e guardar o ID da Transação
+        // Envia para a nova coluna de Mecânica no Supabase
         try {
             await _supabase.from('Utilizadores').update({ 
                 assinatura_mecanica: expIso,
-                id_transacao: transId,
-                mensagem_admin: null // Limpa o aviso de bloqueio assim que ele submete um novo pagamento
+                id_transacao_mecanica: transId,
+                mensagem_admin: null 
             }).eq('id', userData.id);
         } catch(e) { console.log(e); }
 
