@@ -103,6 +103,37 @@
 
 <script>
     const tempoInicio = Date.now();
+    const SUPABASE_URL = 'https://vhcioxwuombrqkhkipdh.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_XW2XlyZRe0IOotl6fpRXGQ_w6_-32AF';
+    const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    // VERIFICA SE O ADMIN DEIXOU MENSAGEM DE BLOQUEIO ASSIM QUE ABRIR A PÁGINA
+    window.addEventListener('DOMContentLoaded', async () => {
+        const userDataJson = localStorage.getItem('usuarioLogado');
+        if(!userDataJson) return;
+        const userData = JSON.parse(userDataJson);
+
+        try {
+            const { data, error } = await _supabase
+                .from('Utilizadores')
+                .select('mensagem_admin')
+                .eq('id', userData.id)
+                .single();
+
+            if (data && data.mensagem_admin) {
+                // Alerta que obriga a clicar em OK
+                Swal.fire({
+                    title: 'Aviso Importante',
+                    text: data.mensagem_admin,
+                    icon: 'warning',
+                    confirmButtonText: 'OK, Entendi',
+                    confirmButtonColor: '#2563EB',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false
+                });
+            }
+        } catch(e) { console.log(e); }
+    });
 
     function copiarNumero(elementId) {
         const texto = document.getElementById(elementId).innerText;
@@ -145,12 +176,13 @@
         userData.assinatura_pesados = expIso;
         localStorage.setItem('usuarioLogado', JSON.stringify(userData)); // Salva no celular
 
-        // Tentativa de sincronizar no Supabase (silencioso caso falhe)
+        // Tentativa de sincronizar no Supabase e guardar o ID da Transação
         try {
-            const SUPABASE_URL = 'https://vhcioxwuombrqkhkipdh.supabase.co';
-            const SUPABASE_KEY = 'sb_publishable_XW2XlyZRe0IOotl6fpRXGQ_w6_-32AF';
-            const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-            await _supabase.from('Utilizadores').update({ assinatura_pesados: expIso }).eq('id', userData.id);
+            await _supabase.from('Utilizadores').update({ 
+                assinatura_pesados: expIso,
+                id_transacao: transId,
+                mensagem_admin: null // Limpa o aviso de bloqueio assim que ele submete um novo pagamento
+            }).eq('id', userData.id);
         } catch(e) { console.log(e); }
 
         setTimeout(() => {
