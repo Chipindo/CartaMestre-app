@@ -39,7 +39,6 @@
         
         .result-box { background: #f0fdf4; border: 1px solid #bbf7d0; padding: 15px; border-radius: 8px; margin-bottom: 15px; }
         
-        /* Notificações Customizadas (Toasts) */
         #toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
         .toast { padding: 15px 20px; border-radius: 8px; color: white; font-size: 14px; font-weight: 500; box-shadow: 0 4px 12px rgba(0,0,0,0.15); display: flex; align-items: center; gap: 10px; transform: translateX(120%); transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); }
         .toast.show { transform: translateX(0); }
@@ -60,14 +59,12 @@
             <p class="subtitle">A sua carta à primeira tentativa.</p>
         </div>
 
-        <!-- Abas -->
         <div class="tabs">
             <div class="tab active" onclick="switchTab('login')">Entrar</div>
             <div class="tab" onclick="switchTab('register')">Criar Conta</div>
             <div class="tab" onclick="switchTab('recover')">Recuperar</div>
         </div>
 
-        <!-- 1. LOGIN -->
         <div id="login-form" class="form-container active">
             <div class="input-group">
                 <label>E-mail</label>
@@ -80,7 +77,6 @@
             <button id="btn-login" onclick="fazerLogin()">Entrar na Conta</button>
         </div>
 
-        <!-- 2. REGISTO -->
         <div id="register-form" class="form-container">
             <div class="input-group"><label>Nome Completo</label><input type="text" id="reg-nome" placeholder="Ex: Onésio Chipindo"></div>
             <div class="input-group"><label>Número de Telefone</label><input type="tel" id="reg-numero" placeholder="840000000"></div>
@@ -89,7 +85,6 @@
             <button id="btn-reg" onclick="criarConta()">Criar Minha Conta</button>
         </div>
 
-        <!-- 3. RECUPERAÇÃO -->
         <div id="recover-form" class="form-container">
             <div id="recover-step-1">
                 <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 15px;">Preencha os dados exatos da sua conta para validar a identidade.</p>
@@ -114,7 +109,6 @@
         </div>
     </div>
 
-    <!-- SCRIPT 1: LÓGICA DE UI -->
     <script>
         function switchTab(tabName) {
             var tabs = document.querySelectorAll('.tab');
@@ -165,7 +159,6 @@
         }
     </script>
 
-    <!-- SCRIPT 2: LÓGICA DE BASE DE DADOS (Supabase) -->
     <script>
         var _supabase = null;
 
@@ -183,7 +176,6 @@
             }
         };
 
-        // 1. FAZER LOGIN
         async function fazerLogin() {
             if(!_supabase) return showNotification("Verifique a sua ligação à internet.", "error");
 
@@ -191,7 +183,6 @@
             const senha = document.getElementById('login-senha').value.trim();
 
             if(!email || !senha) return showNotification("Preencha o e-mail e a senha.", "error");
-
             setLoading('btn-login', true, 'Entrar na Conta');
 
             const { data, error } = await _supabase.from('Utilizadores').select('*').eq('email', email).eq('senha', senha);
@@ -201,15 +192,12 @@
             if (error || !data || data.length === 0) {
                 showNotification("E-mail ou senha incorretos.", "error");
             } else {
-                // GRAVA OS DADOS DO USUÁRIO LOGADO NO NAVEGADOR
                 localStorage.setItem('usuarioLogado', JSON.stringify(data[0]));
-                
                 showNotification("Bem-vindo(a) de volta!", "success");
                 setTimeout(() => window.location.href = "home.html", 1000);
             }
         }
 
-        // 2. CRIAR CONTA
         async function criarConta() {
             if(!_supabase) return showNotification("Verifique a sua ligação à internet.", "error");
 
@@ -219,10 +207,8 @@
             const senha = document.getElementById('reg-senha').value.trim();
 
             if(!nome || !numero || !email || !senha) return showNotification("Preencha todos os campos obrigatórios.", "error");
-
             setLoading('btn-reg', true, 'Criar Minha Conta');
 
-            // O .select() no fim faz com que os dados inseridos sejam retornados para nós
             const { data, error } = await _supabase.from('Utilizadores').insert([{ nome, numero, email, senha }]).select();
 
             setLoading('btn-reg', false, 'Criar Minha Conta');
@@ -230,39 +216,29 @@
             if (error) {
                 showNotification("Este e-mail já pode estar registado.", "error");
             } else {
-                // GRAVA OS DADOS DO USUÁRIO CRIADO NO NAVEGADOR
-                if(data && data.length > 0) {
-                    localStorage.setItem('usuarioLogado', JSON.stringify(data[0]));
-                }
-                
+                if(data && data.length > 0) { localStorage.setItem('usuarioLogado', JSON.stringify(data[0])); }
                 showNotification("Conta criada com sucesso!", "success");
                 setTimeout(() => window.location.href = "home.html", 1500);
             }
         }
 
-        // 3. RECUPERAR
-        let userRecData = null; // Armazena todos os dados do usuário a recuperar
-        
+        let userRecData = null; 
         async function verificarRecuperacao() {
             if(!_supabase) return showNotification("Verifique a sua ligação à internet.", "error");
-
             const nome = document.getElementById('rec-nome').value.trim();
             const numero = document.getElementById('rec-numero').value.trim();
             const email = document.getElementById('rec-email').value.trim();
 
             if(!nome || !numero || !email) return showNotification("Preencha todos os dados.", "error");
-
             setLoading('btn-rec', true, 'Validar Identidade');
 
             const { data, error } = await _supabase.from('Utilizadores').select('*').eq('email', email).eq('numero', numero).eq('nome', nome);
-
             setLoading('btn-rec', false, 'Validar Identidade');
 
             if (error || !data || data.length === 0) {
                 showNotification("Nenhuma conta encontrada com estes dados.", "error");
             } else {
-                userRecData = data[0]; // Guarda os dados para usar depois
-                
+                userRecData = data[0];
                 document.getElementById('info-detalhes').innerHTML = `<b>${data[0].nome}</b><br>${data[0].email}`;
                 document.getElementById('recover-step-1').style.display = 'none';
                 document.getElementById('recover-step-2').style.display = 'block';
@@ -274,7 +250,6 @@
             if(!_supabase) return showNotification("Verifique a sua ligação à internet.", "error");
 
             if (acao === 'keep') {
-                // Loga com os dados já recuperados no passo 1
                 localStorage.setItem('usuarioLogado', JSON.stringify(userRecData));
                 showNotification("Acedendo à conta...", "success");
                 setTimeout(() => window.location.href = "home.html", 1000);
@@ -285,16 +260,13 @@
             if(!novaSenha) return showNotification("Introduza a nova senha.", "error");
 
             setLoading('btn-upd', true, 'Atualizar Senha e Entrar');
-
             const { data, error } = await _supabase.from('Utilizadores').update({ senha: novaSenha }).eq('id', userRecData.id).select();
 
             if (error) {
                 setLoading('btn-upd', false, 'Atualizar Senha e Entrar');
                 showNotification("Erro ao atualizar.", "error");
             } else {
-                // Loga com os dados atualizados
                 localStorage.setItem('usuarioLogado', JSON.stringify(data && data.length > 0 ? data[0] : userRecData));
-                
                 showNotification("Senha atualizada com sucesso!", "success");
                 setTimeout(() => window.location.href = "home.html", 1500);
             }
