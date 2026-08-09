@@ -7,7 +7,6 @@
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
@@ -55,39 +54,44 @@
             color: rgba(255,255,255,0.03); transform: rotate(15deg); pointer-events: none;
         }
         .premium-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; color: #F8FAFC; }
-        .premium-text { font-size: 0.85rem; color: #94A3B8; margin-bottom: 16px; }
+        .premium-text { font-size: 0.85rem; color: #94A3B8; margin-bottom: 20px; }
         
-        .price-tag { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 20px; }
-        .old-price { font-size: 1.1rem; color: #64748B; text-decoration: line-through; font-weight: 500; }
-        .new-price { font-size: 2.2rem; font-weight: 800; color: #FBBF24; display: flex; align-items: baseline; gap: 4px; }
-        .new-price span { font-size: 1rem; font-weight: 600; }
+        /* Planos de Preço */
+        .pricing-plans { display: flex; gap: 12px; margin-bottom: 20px; position: relative; z-index: 2; }
+        .plan-box { 
+            flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); 
+            border-radius: 12px; padding: 12px; text-align: center;
+        }
+        .plan-title { font-size: 0.8rem; font-weight: 700; color: #94A3B8; text-transform: uppercase; margin-bottom: 8px; }
+        .old-price { font-size: 0.9rem; color: #64748B; text-decoration: line-through; }
+        .new-price { font-size: 1.6rem; font-weight: 800; color: #FBBF24; display: flex; align-items: baseline; justify-content: center; gap: 4px; }
+        .new-price span { font-size: 0.8rem; font-weight: 600; }
 
         .btn-premium {
             background: #FBBF24; color: #0F172A; text-decoration: none; padding: 14px; 
             border-radius: 10px; font-weight: 700; font-size: 0.95rem; display: flex; 
             align-items: center; justify-content: center; gap: 8px; transition: all 0.2s;
-            border: none; width: 100%; cursor: pointer;
+            position: relative; z-index: 2;
         }
         .btn-premium:hover { background: #F59E0B; transform: translateY(-2px); }
 
         /* Grelha de Exames */
         .section-title { font-size: 1.1rem; font-weight: 700; color: #1E293B; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
         
-        .exam-grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px;
-        }
+        .exam-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; }
 
         .exam-item {
             background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; 
             padding: 16px 12px; text-align: center; display: flex; flex-direction: column; 
-            align-items: center; gap: 8px; transition: all 0.2s; position: relative;
+            align-items: center; gap: 8px; transition: all 0.2s; text-decoration: none;
         }
 
-        .exam-item.free { border-color: #93C5FD; cursor: pointer; box-shadow: 0 4px 10px rgba(37,99,235,0.05); }
+        .exam-item.free { border-color: #93C5FD; box-shadow: 0 4px 10px rgba(37,99,235,0.05); }
         .exam-item.free:hover { transform: translateY(-3px); border-color: #2563EB; }
         .exam-item.free .exam-icon { color: #2563EB; background: #EFF6FF; }
         
-        .exam-item.locked { background: #F8FAFC; opacity: 0.7; cursor: not-allowed; }
+        .exam-item.locked { background: #F8FAFC; }
+        .exam-item.locked:hover { border-color: #CBD5E1; }
         .exam-item.locked .exam-icon { color: #94A3B8; background: #F1F5F9; }
 
         .exam-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
@@ -118,23 +122,30 @@
         <!-- Call to Action Premium -->
         <div class="premium-card">
             <h2 class="premium-title"><i class="fas fa-crown" style="color: #FBBF24;"></i> Desbloqueie o Sucesso</h2>
-            <p class="premium-text">Tem 3 exames gratuitos. Para aceder aos restantes 22 exames reais e garantir a sua aprovação, ative o passe premium.</p>
+            <p class="premium-text">Tem 3 exames gratuitos. Escolha um plano para aceder aos restantes 22 exames reais.</p>
             
-            <div class="price-tag">
-                <div class="old-price">123 MT</div>
-                <div class="new-price">97 <span>MT</span></div>
+            <div class="pricing-plans">
+                <div class="plan-box">
+                    <div class="plan-title">7 Dias</div>
+                    <div class="old-price">123 MT</div>
+                    <div class="new-price">89 <span>MT</span></div>
+                </div>
+                <div class="plan-box">
+                    <div class="plan-title">30 Dias</div>
+                    <div class="old-price">369 MT</div>
+                    <div class="new-price">258 <span>MT</span></div>
+                </div>
             </div>
             
-            <button class="btn-premium" onclick="assinarPremium()">
+            <a href="assinatura-pesados.html" class="btn-premium">
                 Desbloquear Todos os 25 Exames <i class="fas fa-unlock"></i>
-            </button>
+            </a>
         </div>
 
         <div class="section-title">
             <i class="fas fa-list-check" style="color: #2563EB;"></i> Lista de Exames
         </div>
 
-        <!-- A grelha será gerada pelo JavaScript -->
         <div class="exam-grid" id="examGrid"></div>
 
     </div>
@@ -145,63 +156,31 @@
         const userDataJson = localStorage.getItem('usuarioLogado');
         if (!userDataJson) { window.location.href = 'index.html'; }
 
-        // Gerar 25 exames dinamicamente
+        // Gerar 25 exames dinamicamente com links
         const grid = document.getElementById('examGrid');
         let html = '';
 
         for(let i = 1; i <= 25; i++) {
             if(i <= 3) {
-                // Exames Gratuitos (1 a 3)
+                // Exames Gratuitos abrem o HTML correspondente
                 html += `
-                <div class="exam-item free" onclick="iniciarExame(${i})">
+                <a href="exame-pesado-${i}.html" class="exam-item free">
                     <div class="exam-icon"><i class="fas fa-play"></i></div>
                     <div class="exam-title">Exame ${i}</div>
                     <div class="exam-status status-free">Gratuito</div>
-                </div>`;
+                </a>`;
             } else {
-                // Exames Bloqueados (4 a 25)
+                // Exames Bloqueados redirecionam para a página de assinatura
                 html += `
-                <div class="exam-item locked" onclick="avisoBloqueado()">
+                <a href="assinatura-pesados.html" class="exam-item locked">
                     <div class="exam-icon"><i class="fas fa-lock"></i></div>
                     <div class="exam-title">Exame ${i}</div>
                     <div class="exam-status status-locked">Bloqueado</div>
-                </div>`;
+                </a>`;
             }
         }
         grid.innerHTML = html;
     });
-
-    function iniciarExame(id) {
-        Swal.fire({
-            title: `Exame ${id} Pronto`,
-            text: "Deseja iniciar esta simulação agora?",
-            icon: 'info',
-            showCancelButton: true,
-            confirmButtonColor: '#2563EB',
-            cancelButtonColor: '#64748B',
-            confirmButtonText: 'Iniciar Exame',
-            cancelButtonText: 'Cancelar'
-        });
-    }
-
-    function avisoBloqueado() {
-        Swal.fire({
-            title: 'Exame Bloqueado',
-            text: 'Este exame faz parte do pacote Premium. Desbloqueie agora por apenas 97 MT!',
-            icon: 'warning',
-            confirmButtonColor: '#F59E0B',
-            confirmButtonText: 'Ver Assinatura'
-        });
-    }
-
-    function assinarPremium() {
-        Swal.fire({
-            title: 'Assinatura Premium',
-            text: 'Redirecionando para a página de pagamento seguro...',
-            icon: 'success',
-            confirmButtonColor: '#2563EB'
-        });
-    }
 </script>
 </body>
 </html>
