@@ -37,8 +37,9 @@
         .btn-copy:hover { background: #FFEDD5; }
         .input-group { margin-bottom: 16px; }
         .input-label { display: block; font-size: 0.85rem; font-weight: 600; color: #475569; margin-bottom: 8px; }
-        .input-field { width: 100%; padding: 14px; border: 2px solid #E2E8F0; border-radius: 10px; font-size: 1rem; color: #1E293B; outline: none; transition: border-color 0.2s; font-family: monospace; }
+        .input-field { width: 100%; padding: 14px; border: 2px solid #E2E8F0; border-radius: 10px; font-size: 1rem; color: #1E293B; outline: none; transition: border-color 0.2s; font-family: monospace; background: #FFFFFF; }
         .input-field:focus { border-color: #EA580C; }
+        select.input-field { font-family: 'Inter', sans-serif; cursor: pointer; appearance: auto; }
         .btn-validate { background: #EA580C; color: #FFFFFF; border: none; width: 100%; padding: 16px; border-radius: 10px; font-weight: 700; font-size: 1rem; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; transition: background 0.2s; }
         .btn-validate:hover { background: #C2410C; }
         .btn-help { display: block; text-align: center; margin-top: 16px; color: #64748B; font-size: 0.85rem; font-weight: 500; text-decoration: none; }
@@ -77,8 +78,16 @@
 
         <div class="instruction-card" style="border-color: #FFEDD5; background: #FFF7ED;">
             <div class="step-title"><span class="badge" style="background: #C2410C;">2</span> Valide a Transação</div>
-            <p class="info-text">Após transferir, irá receber uma SMS. Copie o <strong>ID da Transação</strong> (Ex: PP260806.1625.U72802) e cole no campo abaixo.</p>
+            <p class="info-text">Escolha o pacote que pagou e insira o <strong>ID da Transação</strong> da SMS (Ex: PP260806.1625.U72802).</p>
             
+            <div class="input-group">
+                <label class="input-label">Pacote Escolhido</label>
+                <select id="pacoteEscolhido" class="input-field">
+                    <option value="7">Plano de 7 Dias (165 MT)</option>
+                    <option value="30" selected>Plano de 30 Dias (478 MT)</option>
+                </select>
+            </div>
+
             <div class="input-group">
                 <label class="input-label">ID da Transação (SMS)</label>
                 <input type="text" id="transIdInput" class="input-field" placeholder="Ex: PP26... ou 8G54..." autocomplete="off">
@@ -104,6 +113,7 @@
 
     async function validarID() {
         const transId = document.getElementById('transIdInput').value.trim();
+        const diasEscolhidos = parseInt(document.getElementById('pacoteEscolhido').value);
         const tempoDecorridoSegundos = (Date.now() - tempoInicio) / 1000;
 
         if (transId === '') {
@@ -123,13 +133,13 @@
 
         Swal.fire({ title: 'A Validar ID...', text: 'Conectando à rede da operadora...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
 
-        // ATUALIZAÇÃO DA CONTA (Adiciona 30 dias de acesso)
+        // ATUALIZAÇÃO DA CONTA (Adiciona os dias selecionados)
         const userDataJson = localStorage.getItem('usuarioLogado');
         if(!userDataJson) return;
         const userData = JSON.parse(userDataJson);
 
         const expDate = new Date();
-        expDate.setDate(expDate.getDate() + 30);
+        expDate.setDate(expDate.getDate() + diasEscolhidos);
         const expIso = expDate.toISOString();
         
         userData.assinatura_mecanica = expIso;
@@ -146,7 +156,7 @@
         setTimeout(() => {
             Swal.fire({
                 title: 'Pagamento Confirmado!',
-                text: 'O módulo de Mecânica foi totalmente desbloqueado.',
+                text: `O módulo de Mecânica de ${diasEscolhidos} dias foi totalmente desbloqueado.`,
                 icon: 'success', confirmButtonColor: '#EA580C'
             }).then(() => { window.location.href = 'exames-mecanica.html'; });
         }, 3000);
