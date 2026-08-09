@@ -8,6 +8,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
@@ -19,7 +21,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background-color: #CBD5E1; color: #1E293B; display: flex; justify-content: center; min-height: 100dvh; margin: 0; overflow-x: hidden; }
         .app-container { width: 100%; max-width: 600px; min-height: 100dvh; background-color: #F8FAFC; position: relative; display: flex; flex-direction: column; padding-bottom: 80px; box-shadow: 0 0 20px rgba(0,0,0,0.1); }
-        .top-section { background-color: #0F172A; color: #FFFFFF; border-radius: 0 0 24px 24px; padding: 32px 24px 24px; box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.15); margin-bottom: 32px; }
+        .top-section { background-color: #0F172A; color: #FFFFFF; border-radius: 0 0 24px 24px; padding: 32px 24px 24px; box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.15); margin-bottom: 24px; }
         .prep-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; }
         .prep-info { flex: 1; }
         .prep-label { font-size: 0.75rem; text-transform: uppercase; font-weight: 600; color: #94A3B8; letter-spacing: 0.5px; margin-bottom: 8px; display: block; }
@@ -44,35 +46,31 @@
         .icon-box { width: 42px; height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; margin-bottom: 16px; }
         .card h3 { font-size: 0.95rem; font-weight: 600; color: #1E293B; margin-bottom: 8px; }
         .card p { font-size: 0.75rem; color: #64748B; line-height: 1.5; }
+        
+        /* Nova Área de Histórico */
+        .history-section { background: #FFFFFF; border-radius: 16px; padding: 20px; margin-bottom: 24px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid #E2E8F0; }
+        .history-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .history-header h3 { font-size: 1.1rem; color: #1E293B; font-weight: 700; }
+        .history-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #F1F5F9; }
+        .history-item:last-child { border-bottom: none; padding-bottom: 0; }
+        .history-info { display: flex; align-items: center; gap: 12px; }
+        .history-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.9rem; }
+        .hist-pesados { background: #2563EB; }
+        .hist-mecanica { background: #EA580C; }
+        .history-details h4 { font-size: 0.9rem; color: #1E293B; margin-bottom: 2px; }
+        .history-details p { font-size: 0.75rem; color: #64748B; }
+        .history-score { text-align: right; }
+        .history-score span { font-size: 1.1rem; font-weight: 800; }
+        .score-pass { color: #10B981; }
+        .score-fail { color: #EF4444; }
+        .history-empty { text-align: center; padding: 15px; color: #94A3B8; font-size: 0.85rem; font-style: italic; }
+
         .ic-helios { background: #EFF6FF; color: #3B82F6; } .ic-exames { background: #ECFDF5; color: #10B981; }
         .ic-testes { background: #FFFBEB; color: #F59E0B; } .ic-sinais { background: #FEF2F2; color: #EF4444; }
         .ic-multas { background: #F5F3FF; color: #8B5CF6; } .ic-manuais { background: #EFF6FF; color: #3B82F6; }
         .ic-escolas { background: #F0FDFA; color: #14B8A6; } .ic-ajuda { background: #F1F5F9; color: #64748B; }
         .ic-creditos { background: #FDF2F8; color: #EC4899; }
         footer { text-align: center; padding: 40px 20px 30px; font-size: 0.8rem; color: #64748B; font-weight: 500; }
-        
-        .viewer-overlay { position: fixed; top: 0; left: 0; right: 0; margin: 0 auto; width: 100%; max-width: 600px; height: 100dvh; background: #F8FAFC; z-index: 9999; transform: translateX(100vw); transition: transform 0.35s cubic-bezier(0.25, 1, 0.5, 1); display: flex; flex-direction: column; overflow: hidden; box-shadow: -5px 0 25px rgba(0,0,0,0.1); }
-        .viewer-overlay.active { transform: translateX(0); }
-        .viewer-header { background-color: #0F172A; color: white; padding: 18px 24px; display: flex; align-items: center; justify-content: space-between; font-weight: 600; font-size: 1.1rem; box-shadow: 0 4px 10px rgba(0,0,0,0.1); z-index: 10; flex-shrink: 0; }
-        .header-left { display: flex; align-items: center; gap: 15px; }
-        .btn-voltar { background: transparent; border: none; color: white; font-size: 1.2rem; cursor: pointer; padding: 5px; }
-        .viewer-content { flex: 1; overflow-y: auto; padding: 24px; background: #F8FAFC; }
-        .chat-container { display: flex; flex-direction: column; flex: 1; height: 100%; width: 100%; background: #F8FAFC; overflow: hidden; }
-        .chat-history { flex: 1; padding: 20px 24px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; background: #F1F5F9; }
-        .chat-msg { max-width: 88%; padding: 14px 18px; border-radius: 16px; font-size: 0.95rem; line-height: 1.5; position: relative; }
-        .msg-bot { background: #FFFFFF; color: #1E293B; align-self: flex-start; border: 1px solid #E2E8F0; border-bottom-left-radius: 4px; }
-        .msg-user { background: #2563EB; color: #FFFFFF; align-self: flex-end; border-bottom-right-radius: 4px; box-shadow: 0 4px 10px rgba(37,99,235,0.2); }
-        .chat-input-area { padding: 12px 20px; background: #FFFFFF; border-top: 1px solid #E2E8F0; display: flex; gap: 10px; align-items: flex-end; flex-shrink: 0; }
-        .chat-input { flex: 1; border: 1px solid #CBD5E1; border-radius: 20px; padding: 12px 18px; font-size: 0.95rem; outline: none; background: #F8FAFC; resize: none; min-height: 45px; max-height: 120px; overflow-y: auto; font-family: inherit; line-height: 1.4; }
-        .btn-send { background: #2563EB; color: white; border: none; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.1rem; flex-shrink: 0; margin-bottom: 2px; }
-        .btn-upload-chat { background: transparent; color: #64748B; border: none; font-size: 1.4rem; cursor: pointer; padding: 10px 5px 10px 0; margin-bottom: 2px; display: flex; align-items: center; justify-content: center; }
-        .image-preview-container { display: none; padding: 15px 20px; background: #F8FAFC; border-top: 1px solid #E2E8F0; position: relative; }
-        .image-preview-container img { max-height: 100px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .image-preview-close { position: absolute; top: 10px; left: 105px; background: #EF4444; color: white; border: none; border-radius: 50%; width: 26px; height: 26px; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
-        .chat-geral-img { max-width: 100%; border-radius: 8px; margin-top: 8px; cursor: pointer; }
-        .msg-name { font-size: 0.75rem; font-weight: 700; color: #64748B; margin-bottom: 6px; }
-        .msg-time { font-size: 0.65rem; color: rgba(255,255,255,0.7); display: block; text-align: right; margin-top: 6px; }
-        .msg-bot .msg-time { color: #94A3B8; }
     </style>
 </head>
 <body>
@@ -87,7 +85,7 @@
                 <div class="dash-indicators" id="dashIndicators">
                     <span class="active"></span><span class="active"></span><span></span><span></span><span></span><span></span>
                 </div>
-                <a href="exames.html" class="link-small" id="dashMetaLabel">Histórico de Exames</a>
+                <a href="#historyBox" class="link-small" id="dashMetaLabel">Histórico de Exames</a>
             </div>
             <div class="prep-circle-container">
                 <div class="progress-ring"><span id="dashPercent">0%</span></div>
@@ -103,6 +101,18 @@
     </div>
 
     <div class="explore-section">
+        
+        <!-- SECÇÃO DO HISTÓRICO DE EXAMES (CARREGA DA BASE DE DADOS) -->
+        <div class="history-section" id="historyBox">
+            <div class="history-header">
+                <h3>O Meu Progresso</h3>
+                <i class="fas fa-chart-line" style="color:#94A3B8;"></i>
+            </div>
+            <div id="historicoContainer">
+                <div class="history-empty"><i class="fas fa-spinner fa-spin"></i> A carregar exames...</div>
+            </div>
+        </div>
+
         <div class="grid-container">
             <a href="tutor-ia.html" class="card">
                 <div class="icon-box ic-helios"><i class="far fa-comment-dots"></i></div>
@@ -163,71 +173,89 @@
     </footer>
 </div>
 
-<div id="invoiceTemplate" style="display: none; padding: 40px; font-family: 'Helvetica', 'Arial', sans-serif; color: #1E293B; background: #FFF; width: 800px; max-width: 100%;">
-    <div style="display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #E2E8F0; padding-bottom: 20px; margin-bottom: 30px;">
-        <div>
-            <h1 style="color: #2563EB; font-size: 28px; margin: 0 0 5px 0;">CARTA MESTRE</h1>
-            <p style="margin: 0; color: #64748B; font-size: 14px;">Plataforma de Simulação e Preparação</p>
-        </div>
-        <div style="text-align: right;">
-            <h2 style="margin: 0 0 5px 0; font-size: 22px; color: #0F172A;">FATURA / RECIBO</h2>
-            <p style="margin: 0; color: #64748B; font-size: 14px;" id="invDate">Data: --</p>
-            <p style="margin: 0; color: #64748B; font-size: 14px;" id="invId">Fatura Nº: --</p>
-        </div>
-    </div>
-    
-    <div style="display: flex; justify-content: space-between; margin-bottom: 40px;">
-        <div>
-            <h4 style="margin: 0 0 10px 0; color: #64748B; text-transform: uppercase; font-size: 12px;">Faturado A:</h4>
-            <p style="margin: 0 0 5px 0; font-weight: bold; font-size: 16px;" id="invClientName">Estudante</p>
-            <p style="margin: 0; font-size: 14px;" id="invClientPhone">--</p>
-        </div>
-        <div style="text-align: right;">
-            <h4 style="margin: 0 0 10px 0; color: #64748B; text-transform: uppercase; font-size: 12px;">Pagamento Emitido Para:</h4>
-            <p style="margin: 0 0 5px 0; font-weight: bold; font-size: 16px;">Onésio Chipindo</p>
-            <p style="margin: 0; font-size: 14px;">Contacto Oficial: 82 170 1000</p>
-            <p style="margin: 0; font-size: 14px; font-weight: bold; color: #2563EB;" id="invMethod">Método: --</p>
-        </div>
-    </div>
-    
-    <table style="width: 100%; border-collapse: collapse; margin-bottom: 30px;">
-        <thead>
-            <tr style="background: #F8FAFC; border-bottom: 2px solid #E2E8F0;">
-                <th style="padding: 12px; text-align: left; font-size: 14px; color: #64748B;">Descrição do Serviço</th>
-                <th style="padding: 12px; text-align: center; font-size: 14px; color: #64748B;">Qtd</th>
-                <th style="padding: 12px; text-align: right; font-size: 14px; color: #64748B;">Total (MT)</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td style="padding: 15px 12px; border-bottom: 1px solid #E2E8F0; font-size: 15px;" id="invService">Assinatura Carta Mestre</td>
-                <td style="padding: 15px 12px; border-bottom: 1px solid #E2E8F0; font-size: 15px; text-align: center;">1</td>
-                <td style="padding: 15px 12px; border-bottom: 1px solid #E2E8F0; font-size: 15px; text-align: right; font-weight: bold;" id="invTotal">0.00 MT</td>
-            </tr>
-        </tbody>
-    </table>
-    
-    <div style="text-align: right; margin-bottom: 40px;">
-        <h3 style="margin: 0; font-size: 24px; color: #1E293B;">Total a Pagar: <span id="invTotalFinal" style="color: #2563EB;">0.00 MT</span></h3>
-    </div>
-</div>
-
 <script>
+    // CONFIGURAÇÃO SUPABASE
+    const SUPABASE_URL = 'https://vhcioxwuombrqkhkipdh.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_XW2XlyZRe0IOotl6fpRXGQ_w6_-32AF';
+    const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    let usuarioData = null;
+
     document.addEventListener("DOMContentLoaded", function() {
         const userDataJson = localStorage.getItem('usuarioLogado');
         if (!userDataJson) { window.location.href = 'index.html'; return; }
         
         try {
-            const usuario = JSON.parse(userDataJson);
-            const primeiroNome = usuario.nome.split(' ')[0];
-            
+            usuarioData = JSON.parse(userDataJson);
+            const primeiroNome = usuarioData.nome.split(' ')[0];
             document.getElementById('userNameLabel').innerText = 'Olá, ' + primeiroNome;
-            document.getElementById('invClientName').innerText = usuario.nome;
-            document.getElementById('invClientPhone').innerText = usuario.numero || '--';
+            
+            // Inicia o carregamento do histórico
+            carregarHistorico();
+            
         } catch (e) {
             window.location.href = 'index.html';
         }
     });
+
+    async function carregarHistorico() {
+        if(!usuarioData) return;
+        
+        try {
+            // Vai buscar os últimos 3 exames feitos pelo aluno
+            const { data, error } = await _supabase
+                .from('Historico_Exames')
+                .select('*')
+                .eq('user_id', usuarioData.id)
+                .order('created_at', { ascending: false })
+                .limit(3);
+
+            const container = document.getElementById('historicoContainer');
+            
+            if (error || !data || data.length === 0) {
+                container.innerHTML = '<div class="history-empty">Ainda não realizou nenhum exame simulado. O seu histórico aparecerá aqui.</div>';
+                return;
+            }
+
+            container.innerHTML = ''; // Limpa o "A carregar..."
+            let ultimaPercentagem = 0;
+
+            data.forEach(exame => {
+                // Formatar Data
+                const dateObj = new Date(exame.created_at);
+                const dataFormatada = `${dateObj.getDate()}/${dateObj.getMonth()+1}/${dateObj.getFullYear()}`;
+                
+                const isPesados = exame.modulo === 'pesados';
+                const passClass = exame.percentagem >= 72 ? 'score-pass' : 'score-fail'; // 72% é aprovação (18/25)
+                
+                if(!ultimaPercentagem) ultimaPercentagem = exame.percentagem;
+
+                container.innerHTML += `
+                    <div class="history-item">
+                        <div class="history-info">
+                            <div class="history-icon ${isPesados ? 'hist-pesados' : 'hist-mecanica'}">
+                                <i class="fas ${isPesados ? 'fa-truck' : 'fa-cogs'}"></i>
+                            </div>
+                            <div class="history-details">
+                                <h4>Exame de ${isPesados ? 'Pesados' : 'Mecânica'}</h4>
+                                <p>${dataFormatada} • ${exame.acertos} certos, ${exame.erros} errados</p>
+                            </div>
+                        </div>
+                        <div class="history-score">
+                            <span class="${passClass}">${exame.percentagem}%</span>
+                        </div>
+                    </div>
+                `;
+            });
+
+            // Atualiza a percentagem gigante no topo do Dashboard com o resultado mais recente
+            document.getElementById('dashPercent').innerText = `${ultimaPercentagem}%`;
+
+        } catch(e) {
+            console.log("Erro ao puxar histórico:", e);
+            document.getElementById('historicoContainer').innerHTML = '<div class="history-empty">Erro de conexão ao carregar o histórico.</div>';
+        }
+    }
 
     function fazerLogout() {
         localStorage.removeItem('usuarioLogado');
