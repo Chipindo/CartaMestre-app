@@ -5,239 +5,324 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Carta Mestre - Exame Teórico</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <!-- Supabase -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-/* VARIAVEIS DE CORES V7 */
+/* VARIAVEIS DE CORES */
 :root {
-    --primary: #003366 !important;
-    --primary-gradient: linear-gradient(135deg, #003366 0%, #001a33 100%) !important;
-    --green: #2ECC71 !important;
-    --red: #FF3B30 !important;
-    --orange: #FF9F0A !important;
-    --bg: #F2F5F9 !important;
+    --primary: #04182B !important;
+    --primary-light: #112B47 !important;
+    --green: #00D37F !important;
+    --red: #EF4444 !important;
+    --orange: #F59E0B !important;
+    --bg: #F0F4F8 !important;
     --card: #ffffff !important;
-    --text: #1C2C40 !important;
-    --muted: #64748B !important;
-    --blue-light: #007AFF !important;
-    --shadow-sm: 0 4px 10px rgba(0, 0, 0, 0.03) !important;
-    --shadow-md: 0 10px 25px rgba(0, 51, 102, 0.08) !important;
-    --radius-lg: 24px !important;
+    --text: #1F2937 !important;
+    --muted: #9CA3AF !important;
+    --blue-active: #3B82F6 !important;
 }
 
-/* SISTEMA ANTI-CÓPIA */
+/* SISTEMA ANTI-CÓPIA & RESET */
 * {
     margin: 0; padding: 0; box-sizing: border-box;
     font-family: 'Plus Jakarta Sans', sans-serif;
-    transition: all 0.2s ease;
+    transition: all 0.2s ease-in-out;
     -webkit-tap-highlight-color: transparent;
     -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none;
     -webkit-touch-callout: none; text-decoration: none;
 }
 
-body {
+html, body {
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
     background-color: var(--bg);
     color: var(--text);
-    overflow-x: hidden;
-    padding-bottom: 20px;
-    display: flex; flex-direction: column; align-items: center;
+    display: flex; 
+    flex-direction: column;
 }
 
-/* ================= HEADER V7 (Otimizado para Exame) ================= */
+/* ================= TOPO FIXO (HEADER + NAV) ================= */
+.fixed-top-area {
+    flex-shrink: 0;
+    width: 100%;
+    position: relative;
+    z-index: 1000;
+}
+
 header {
-    background: var(--primary-gradient);
-    width: 100%; padding: 20px 20px 30px;
-    border-radius: 0 0 35px 35px;
-    display: flex; justify-content: space-between; align-items: center;
-    box-shadow: 0 10px 25px rgba(0, 51, 102, 0.2);
-    position: sticky; top: 0; z-index: 1000;
+    background: var(--primary);
+    width: 100%; 
+    padding: 15px 15px 45px 15px;
+    border-radius: 0 0 30px 30px;
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center;
+    gap: 8px;
 }
 
-.brand-container { color: white; }
-.brand-title { font-size: 1.4rem; font-family: 'Montserrat', sans-serif; font-weight: 800; letter-spacing: -0.5px; }
-.brand-title span { color: var(--green); }
-.brand-subtitle { font-size: 0.75rem; font-weight: 600; opacity: 0.9; margin-top: 2px; }
+.brand-container {
+    min-width: 0; /* Permite encolher se necessário para não empurrar os botões */
+    flex-shrink: 1;
+}
 
-.header-right { display: flex; gap: 10px; align-items: center; }
+.brand-title { 
+    font-size: 1.35rem; 
+    font-family: 'Montserrat', sans-serif; 
+    font-weight: 900; 
+    color: white;
+    letter-spacing: -0.5px; 
+    line-height: 1.1;
+    white-space: nowrap;
+}
+.brand-title span { color: var(--green); }
+.brand-subtitle { 
+    font-size: 0.7rem; 
+    font-weight: 600; 
+    color: white;
+    opacity: 0.8; 
+    margin-top: 3px; 
+    text-transform: uppercase; 
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+}
+
+.header-right { 
+    display: flex; 
+    gap: 6px; 
+    align-items: center; 
+    flex-shrink: 0;
+}
 
 .timer-box {
-    background: rgba(255,255,255,0.15); color: white;
-    padding: 8px 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2);
-    display: flex; align-items: center; gap: 6px; font-weight: 800; font-size: 1rem;
-    backdrop-filter: blur(5px);
+    background: var(--primary-light); 
+    color: white;
+    padding: 7px 10px; 
+    border-radius: 10px; 
+    border: 1px solid rgba(255,255,255,0.08);
+    display: flex; align-items: center; gap: 5px; 
+    font-weight: 700; font-size: 0.85rem;
+    white-space: nowrap;
 }
-.timer-box i { font-size: 0.9rem; color: var(--orange); }
+.timer-box i { font-size: 0.85rem; color: var(--orange); }
 
 .btn-terminar {
     background: var(--red); color: white; border: none;
-    padding: 10px 15px; border-radius: 12px; font-weight: 800; cursor: pointer;
-    font-size: 0.8rem; box-shadow: 0 4px 10px rgba(255, 59, 48, 0.3); text-transform: uppercase;
+    padding: 8px 12px; border-radius: 10px; font-weight: 700; cursor: pointer;
+    font-size: 0.75rem; text-transform: uppercase;
+    white-space: nowrap;
 }
 .btn-terminar:active { transform: scale(0.95); }
 
-/* ================= BARRA DE PAGINAÇÃO V7 ================= */
+/* ================= BARRA DE PAGINAÇÃO ================= */
 .nav-wrapper {
-    width: 100%; max-width: 600px; display: flex; align-items: center; gap: 10px;
-    background: transparent; padding: 15px 20px;
-    margin-top: -15px; z-index: 999;
+    width: 100%; max-width: 600px; 
+    margin: -24px auto 0 auto;
+    display: flex; align-items: center; gap: 10px;
+    padding: 0 15px;
 }
 .nav-container {
-    display: flex; align-items: center; gap: 8px; overflow-x: auto; scrollbar-width: none;
-    flex-grow: 1; padding: 5px 0;
+    display: flex; align-items: center; gap: 10px; 
+    overflow-x: auto; scrollbar-width: none;
+    flex-grow: 1; padding: 10px 0;
 }
 .nav-container::-webkit-scrollbar { display: none; }
 
 .nav-btn {
-    background: var(--card); color: var(--primary); border: 1px solid rgba(226,232,240,0.8);
-    width: 45px; height: 45px; border-radius: 14px; font-size: 1.1rem;
+    background: var(--card); color: var(--primary); border: none;
+    width: 48px; height: 48px; border-radius: 14px; font-size: 1.1rem;
     display: flex; justify-content: center; align-items: center;
-    cursor: pointer; flex-shrink: 0; box-shadow: var(--shadow-sm);
+    cursor: pointer; flex-shrink: 0; 
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
 }
-.nav-btn:active { background: #E2E8F0; transform: scale(0.95); }
+.nav-btn:active { background: #E5E7EB; }
 
 .page-num {
-    min-width: 42px; height: 42px; background: var(--card); color: var(--muted);
+    min-width: 48px; height: 48px; 
+    background: var(--card); color: var(--muted);
     display: flex; align-items: center; justify-content: center;
-    border-radius: 12px; font-weight: 700; cursor: pointer; border: 1px solid rgba(226,232,240,0.8);
-    box-shadow: var(--shadow-sm); transition: all 0.2s; font-size: 0.9rem; flex-shrink: 0;
+    border-radius: 14px; font-weight: 700; cursor: pointer; 
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04); 
+    font-size: 1rem; flex-shrink: 0;
 }
-.page-num.active { background: var(--blue-light); color: white; border-color: var(--blue-light); transform: translateY(-2px); box-shadow: 0 5px 12px rgba(0,122,255,0.3); }
-.page-num.answered { border-bottom: 4px solid var(--green); color: var(--primary); }
+.page-num.active { 
+    background: var(--blue-active); 
+    color: white; 
+    box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4); 
+    transform: translateY(-2px);
+}
+.page-num.answered { border-bottom: 4px solid var(--green); color: var(--primary); font-weight: 800; }
 
-/* Cores após a correção */
-.page-num.rev-correct { background: var(--green) !important; color: white !important; border-color: var(--green) !important; }
-.page-num.rev-wrong { background: var(--red) !important; color: white !important; border-color: var(--red) !important; }
+.page-num.rev-correct { background: var(--green) !important; color: white !important; border-bottom: none; }
+.page-num.rev-wrong { background: var(--red) !important; color: white !important; border-bottom: none; }
 
-/* ================= ÁREA DA PERGUNTA V7 ================= */
-.container { width: 100%; max-width: 550px; padding: 0 20px; }
+/* ================= ÁREA DE CONTEÚDO ROLÁVEL ================= */
+.scrollable-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 15px 40px 15px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
 
-.question-wrapper { display: none; animation: slideUpFade 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+.container { width: 100%; max-width: 580px; }
+
+.question-wrapper { display: none; animation: fadeIn 0.3s ease; }
 .question-wrapper.active { display: block; }
 
-@keyframes slideUpFade {
-    from { opacity: 0; transform: translateY(20px) scale(0.98); }
-    to { opacity: 1; transform: translateY(0) scale(1); }
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 .card-inner {
-    background: var(--card); border-radius: var(--radius-lg); padding: 20px;
-    box-shadow: var(--shadow-md); border: 1px solid rgba(226, 232, 240, 0.6);
+    background: var(--card); 
+    border-radius: 24px; 
+    padding: 25px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.03); 
 }
 
-.q-img { width: 100%; height: auto; max-height: 250px; object-fit: contain; border-radius: 16px; margin-bottom: 15px; pointer-events: none; display: block; }
-.q-text-area { font-weight: 800; font-size: 1.05rem; color: var(--primary); margin-bottom: 20px; line-height: 1.4; }
+.q-img { 
+    width: 100%; height: auto; max-height: 250px; 
+    object-fit: contain; border-radius: 12px; 
+    margin-bottom: 25px; pointer-events: none; display: block; 
+}
+.q-text-area { 
+    font-weight: 800; font-size: 1.15rem; 
+    color: var(--primary); margin-bottom: 25px; 
+    line-height: 1.4; 
+}
 
-/* ================= OPÇÕES V7 ================= */
-.options-container { display: flex; flex-direction: column; gap: 12px; }
+/* ================= OPÇÕES ================= */
+.options-container { display: flex; flex-direction: column; gap: 14px; }
 
 .option {
-    display: flex; align-items: center; background: #F8FAFC;
-    border: 2px solid #E2E8F0; border-radius: 16px; padding: 12px 15px;
-    cursor: pointer; font-size: 0.9rem; font-weight: 600; color: var(--text);
-    transition: all 0.2s;
+    display: flex; align-items: center; background: var(--card);
+    border: 1.5px solid #E5E7EB; border-radius: 16px; padding: 12px 16px;
+    cursor: pointer; font-size: 0.95rem; font-weight: 600; color: var(--text);
 }
+.option:hover { border-color: #D1D5DB; }
 .option input { display: none; }
 
 .option-letter {
-    background: var(--primary); color: white; border-radius: 10px;
-    width: 34px; height: 34px; display: flex; align-items: center;
-    justify-content: center; font-weight: 800; margin-right: 12px; flex-shrink: 0; font-size: 0.9rem;
+    background: var(--primary); color: white; border-radius: 12px;
+    width: 42px; height: 42px; display: flex; align-items: center;
+    justify-content: center; font-weight: 800; margin-right: 16px; 
+    flex-shrink: 0; font-size: 1rem;
 }
 
 /* Estado Selecionado */
-.option:has(input:checked) { border-color: var(--blue-light); background: rgba(0, 122, 255, 0.05); }
-.option:has(input:checked) .option-letter { background: var(--blue-light); }
+.option:has(input:checked) { 
+    border-color: var(--blue-active); 
+    background: #F3F8FF; 
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.08); 
+}
+.option:has(input:checked) .option-letter { background: var(--blue-active); }
 
 /* Correção Final */
-.correct-ans { background: rgba(46, 204, 113, 0.1) !important; border-color: var(--green) !important; }
+.correct-ans { background: #ECFDF5 !important; border-color: var(--green) !important; }
 .correct-ans .option-letter { background: var(--green) !important; }
-.wrong-ans { background: rgba(255, 59, 48, 0.1) !important; border-color: var(--red) !important; }
+.wrong-ans { background: #FEF2F2 !important; border-color: var(--red) !important; }
 .wrong-ans .option-letter { background: var(--red) !important; }
 
 .label-certa {
-    background: var(--green); color: white; font-size: 0.65rem; padding: 4px 8px;
-    border-radius: 8px; margin-left: auto; font-weight: 800; display: none;
+    background: var(--green); color: white; font-size: 0.7rem; padding: 5px 10px;
+    border-radius: 8px; margin-left: auto; font-weight: 800; display: none; text-transform: uppercase;
 }
 
-/* Trava após fim */
 .exam-finished .option { pointer-events: none; }
 
-/* ================= MODAL DE RESULTADO V7 ================= */
+/* ================= MODAL DE RESULTADO ================= */
 .modal-overlay {
     display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(5px);
+    background: rgba(4, 24, 43, 0.85); backdrop-filter: blur(8px);
     z-index: 2000; justify-content: center; align-items: center; padding: 20px;
 }
 .modal-content {
-    background: white; width: 100%; max-width: 360px; border-radius: var(--radius-lg);
-    padding: 30px 25px; text-align: center; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.3);
-    animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    background: white; width: 100%; max-width: 380px; border-radius: 28px;
+    padding: 40px 30px; text-align: center; position: relative; 
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
-@keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+@keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
-#modalIcon { font-size: 3.5rem; margin-bottom: 10px; }
-.modal-status { font-size: 1.8rem; font-family: 'Montserrat', sans-serif; font-weight: 800; margin-bottom: 20px; }
+#modalIcon i { font-size: 4.5rem; margin-bottom: 15px; }
+.modal-status { font-size: 2rem; font-family: 'Montserrat', sans-serif; font-weight: 900; margin-bottom: 25px; letter-spacing: -0.5px; }
 .status-reprovado { color: var(--red); }
 .status-aprovado { color: var(--green); }
 
-.modal-stats { display: flex; justify-content: space-around; background: #F8FAFC; padding: 15px; border-radius: 16px; margin-bottom: 25px; border: 1px solid #E2E8F0; }
-.modal-stats div { display: flex; flex-direction: column; align-items: center; gap: 5px; font-size: 0.75rem; font-weight: 700; color: var(--muted); text-transform: uppercase; }
-.stat-value { font-size: 1.4rem; font-weight: 800; color: var(--primary); }
+.modal-stats { 
+    display: flex; justify-content: space-between; background: #F9FAFB; 
+    padding: 20px; border-radius: 20px; margin-bottom: 30px; border: 1px solid #E5E7EB; 
+}
+.modal-stats div { display: flex; flex-direction: column; align-items: center; gap: 8px; font-size: 0.75rem; font-weight: 700; color: var(--muted); text-transform: uppercase; width: 33%; }
+.modal-stats .divider { width: 1px; background: #E5E7EB; height: 40px; align-self: center; }
+.stat-value { font-size: 1.6rem; font-weight: 800; color: var(--primary); line-height: 1; }
 .text-green { color: var(--green); }
 .text-red { color: var(--red); }
 
-.modal-footer { display: flex; flex-direction: column; gap: 10px; }
+.modal-footer { display: flex; flex-direction: column; gap: 12px; }
 .btn-ver {
-    background: var(--blue-light); color: white; padding: 14px; border-radius: 14px;
-    font-weight: 800; cursor: pointer; text-transform: uppercase; font-size: 0.9rem; border: none; width: 100%;
+    background: var(--blue-active); color: white; padding: 16px; border-radius: 16px;
+    font-weight: 700; cursor: pointer; text-transform: uppercase; font-size: 0.9rem; border: none; width: 100%;
 }
 .btn-sair {
-    background: #EEF2F7; color: var(--primary); padding: 14px; border-radius: 14px;
-    font-weight: 800; cursor: pointer; text-transform: uppercase; font-size: 0.9rem; border: none; width: 100%;
+    background: #F3F4F6; color: var(--primary); padding: 16px; border-radius: 16px;
+    font-weight: 700; cursor: pointer; text-transform: uppercase; font-size: 0.9rem; border: none; width: 100%;
 }
 
 </style>
 </head>
 <body>
 
-<header>
-    <div class="brand-container">
-        <div class="brand-title">CARTA<span>MESTRE</span></div>
-        <div class="brand-subtitle">Exame Teórico 1</div>
-    </div>
-    <div class="header-right">
-        <div class="timer-box"><i class="fas fa-clock"></i> <span id="timer">60:00</span></div>
-        <button class="btn-terminar" id="btnFinish" onclick="checkExam()">Finalizar</button>
-    </div>
-</header>
+<!-- AREA FIXA NO TOPO -->
+<div class="fixed-top-area">
+    <header>
+        <div class="brand-container">
+            <div class="brand-title">CARTA<span>MESTRE</span></div>
+            <div class="brand-subtitle">Exame Teórico 1</div>
+        </div>
+        <div class="header-right">
+            <div class="timer-box"><i class="fas fa-clock"></i> <span id="timer">60:00</span></div>
+            <button class="btn-terminar" id="btnFinish" onclick="checkExam()">Finalizar</button>
+        </div>
+    </header>
 
-<div class="nav-wrapper" id="navBar">
-    <div class="nav-btn" onclick="prevQ()"><i class="fas fa-chevron-left"></i></div>
-    <div class="nav-container"><div id="pagination_bar" style="display: flex; gap: 8px;"></div></div>
-    <div class="nav-btn" onclick="nextQ()"><i class="fas fa-chevron-right"></i></div>
+    <div class="nav-wrapper" id="navBar">
+        <button class="nav-btn" onclick="prevQ()"><i class="fas fa-chevron-left"></i></button>
+        <div class="nav-container"><div id="pagination_bar" style="display: flex; gap: 10px;"></div></div>
+        <button class="nav-btn" onclick="nextQ()"><i class="fas fa-chevron-right"></i></button>
+    </div>
 </div>
 
-<div class="container">
-    <form id="exam" onsubmit="return false;"><div id="q_list"></div></form>
+<!-- AREA DE SCROLL PARA AS PERGUNTAS -->
+<div class="scrollable-content">
+    <div class="container">
+        <form id="exam" onsubmit="return false;"><div id="q_list"></div></form>
+    </div>
 </div>
 
+<!-- MODAL RESULTADO -->
 <div class="modal-overlay" id="modalRes">
     <div class="modal-content">
-        <div id="modalIcon">🎖️</div>
+        <div id="modalIcon"></div>
         <div class="modal-status" id="modalTitle">Reprovado</div>
         
         <div class="modal-stats">
             <div><span id="resAcertos" class="stat-value text-green">0</span> Acertos</div>
+            <div class="divider"></div>
             <div><span id="resErros" class="stat-value text-red">25</span> Erros</div>
+            <div class="divider"></div>
             <div><span id="resMedia" class="stat-value">0</span> Pontos</div>
         </div>
         
         <div class="modal-footer">
             <button class="btn-ver" onclick="closeModal()"><i class="fas fa-search"></i> Ver Correção</button>
-            <button class="btn-sair" onclick="window.location.href='home.html'"><i class="fas fa-arrow-left"></i> Voltar à Lista</button>
+            <button class="btn-sair" onclick="window.location.href='exames.html'"><i class="fas fa-arrow-left"></i> Voltar à Lista</button>
         </div>
     </div>
 </div>
@@ -272,7 +357,7 @@ header {
         { id: 10, img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi4HmuZ82p6Y3XuTivz8ijS5jaKrkc-PWqgmgn7k5JCHCGhDQprOZbPrrrDQT6a0oVCkGCRb80nDk1Mo_bfegGyeSBmbbd11qV3vCIMPwJFypgIQyHlU_PD44XCBQs_NFh_8QhXnHwCeC484kQ56kO-DQQdanGUU-nSdC0pNWHV9d9wHXYcD8bwZb0mxsOH/s656/1000032304.jpg", q: "O que indica o sinal?", options: {A: "Sentido proibido.", B: "Trânsito proibido.", C: "Trânsito proibido a automóveis ligeiros de passageiros."}, ans: "B" },
         { id: 11, img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj9NkNsdwurYu9KTS_7JvDDnfzrgp_VmZ8j1fOr6-kTDieao_cX8MGyolhi8k5b52wMDk-IdQjjZhCTsDWlNS2DcdNZpIFVUjeaOspp82_XyE7BZIGLfdRn_cpVOulsOmprUfLH2cIBYR8C4sWOfNHBfjfRnfeM0jSS08wlYO3ZNc4AIfO0u9Nz8dv4OAFo/s646/1000032307.jpg", q: "Uma das consequências de aumentar a velocidade, é que...", options: {A: "Melhora o tempo de reacção.", B: "Aumenta a gravidade das lesões em caso de acidente.", C: "Reduz a distância de travagem.", D: "Reduz as distracções."}, ans: "B" },
         { id: 12, img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg88FqN4gVCSZxn8z3qRQPWmIPQXHd2-2j_FbPvA-Lnq9sR7QAEj8ejBZ1GBrYHQ86qBXpam3Z4FlS7edgYG-Da_4uKTI7DPXBcBwN_kpgbJviQMdQg0AbEoxzBD5eBiibwcQnTt7BPUwnu3U-VpBM0YHzxCpngB47ltR2tfJRUujIn0tXiLy2yrdCeAdwu/s632/1000032310.jpg", q: "O trânsito de veículos ou de animais é feito...", options: {A: "Do lado direito das faixas de rodagem e o mais próximo possível das bermas ou passeios.", B: "Próximo do eixo da via.", C: "Pela esquerda das faixas de rodagem e o mais próximo possível das bermas ou passeios, mas a uma distância destes que permita evitar qualquer acidente."}, ans: "C" },
-        { id: 13, img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgyitEKXOroSXuoy2rEHqVmZhJKv9J8hZut5G7X1FNLC1gHRDcb0w9yrgz79iNA62HyeuX6j-5DXrLJR9_fo10ekbMjfHwhMvqzKQd1Lzfkt2LPTf-fT_UxDHZa-ttc2sSXw_FReLPlbi-HrUWfQv9ODYaPkEURjMAMvQjS11BU1kL04XgAGe4Gs7aMM8f4/s651/1000032317.jpg", q: "Numa auto-estrada, pode-se inverter o sentido de marcha?", options: {A: "Sempre que possível.", B: "Nunca.", C: "Sim, se a manobra for feita lentamente."}, ans: "B" },
+        { id: 13, img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgyitEKXOroSXuoy2rEHqVmZhJKv9J8hZut5G7X1FNLC1gHRDcb0w9yrgz79iNA62HyeuX6j-5DXrLJR9_fo10ekbMjfHwhMvqzKQd1Lzfkt2LPTf-fT_UxDHZa-ttc2sSXw_FReLPlbi-HrUWfQv9ODYaPkEURjMAMvQjS11BU1kL04XgAGe4Gs7aMM8f4/s651/1000032317.jpg", q: "Numa auto-estrada, pode-se inverter o sentido de marcha?", options: {A: "Sempre que possível.", B: "Nunca.", C: "Sim, se a manobra fôr feita lentamente."}, ans: "B" },
         { id: 14, img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgPL6j2CoHkKxe3GT60qT1roChmxFbKqkxFLih1bJ1f9piR_LqbW5Euktz_UpIGCIsbqHYTEwpXO6iCMSReGFi6L6rN-1WvNpQV-L7BIrkyiFs3vuwzEtXakZBkhyphenhyphenaPyunY889uGpprAa4bowch4T9ap5zasARM9aQxR7q6u3cYWqTFJoesgxktSIr9e_ZU/s657/1000032320.jpg", q: "O que indica o sinal?", options: {A: "Paragem proibida para veículos que transportam substâncias perigosas.", B: "Obrigação de seguir em frente para veículos com substâncias explosivas.", C: "Área reservada para veículos que transportam substâncias perigosas."}, ans: "A" },
         { id: 15, img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj3T1mMHvHs5ICDK1fql7wiDVTrmKk1TazmuWNDjC0MlwZmWOghyUwjAToFG7ptTvJC-QJn48TdnWFhIWg1srdyPdcE33417dOSituIX5OOqG29S_h5Bwts2h4GEFS4asOqsHx76Hxi-1sBSJkSaUX4WbkluFM_aKQp99HSlqmeVKx4F9zrHGT0zSh1gemA/s640/1000032323.jpg", q: "Que comunica o condutor aos outros utentes da via?", options: {A: "Que vai voltar para o lado esquerdo do volante.", B: "Que vai voltar para o lado direito do volante.", C: "Que vai reduzir a velocidade."}, ans: "C" },
         { id: 16, img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiu4mb0ZcYu4XD1GIvSmvQO-tPDyAlzPtV_n_kIEkUXKBOWduqXOchyEjR34wnoRs4nEU8Oh7YBxvrDzXENFtnxlwpx2KKhS_76kXFgbs0O4Ys1RCo7MZcIXJuusFb3ngrgR8jcwRoQEBWOxBOvy4pvhR7uGNSKX7yzgOPLFSngStw_iDIlB0quXhedMxed/s636/1000032331.jpg", q: "O que indica o sinal?", options: {A: "A presença de cancela motorizada ao centro.", B: "A presença de ponte móvel.", C: "A presença de entroncamento obliquo à esquerda."}, ans: "B" },
@@ -330,7 +415,7 @@ header {
         if (isExamFinished) return;
         userAnswers[`q${qId}`] = val;
         document.getElementById(`page_${index}`).classList.add('answered');
-        setTimeout(() => nextQ(), 350); // Transição suave
+        setTimeout(() => nextQ(), 400);
     }
 
     function startTimer() {
@@ -353,8 +438,8 @@ header {
         document.getElementById(`q_wrap_${index}`).classList.add('active');
         document.getElementById(`page_${index}`).classList.add('active');
         
-        // Mantém a barra de paginação focada na questão atual
         document.getElementById(`page_${index}`).scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+        document.querySelector('.scrollable-content').scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     function nextQ() { goToQuestion(currentIdx + 1); }
@@ -365,7 +450,6 @@ header {
         clearInterval(countdown);
         isExamFinished = true;
         
-        // Bloqueia cliques nas opções após finalizar
         document.getElementById('exam').classList.add('exam-finished');
         
         let score = 0;
@@ -373,16 +457,13 @@ header {
             const userAns = userAnswers[`q${item.id}`];
             const isCorrect = userAns === item.ans;
             
-            // Marca sempre a opção correta
             document.getElementById(`label-${item.id}-${item.ans}`).classList.add('correct-ans');
             document.getElementById(`certa-${item.id}-${item.ans}`).style.display = 'block';
             
-            // Pinta de vermelho a opção errada se o aluno tiver escolhido
             if (userAns && !isCorrect) {
                 document.getElementById(`label-${item.id}-${userAns}`).classList.add('wrong-ans');
             }
 
-            // Atualiza a cor dos botões na paginação
             const pageBtn = document.getElementById(`page_${index}`);
             if (isCorrect) {
                 score++;
@@ -394,9 +475,6 @@ header {
 
         showModal(score);
 
-        // ==========================================
-        // CÓDIGO NOVO: GRAVAR HISTÓRICO NO SUPABASE
-        // ==========================================
         const totalErros = questions.length - score;
         const percentagem = Math.round((score / questions.length) * 100);
 
@@ -417,7 +495,6 @@ header {
             console.error('Erro ao guardar histórico:', e);
         }
 
-        // Salva na memória do telefone sem falhas (Original mantido)
         const dadosParaSalvar = {
             nome: NOME_DO_EXAME,
             acertos: score,
@@ -431,10 +508,14 @@ header {
         const aprovado = score >= 18;
         const modal = document.getElementById('modalRes');
         const title = document.getElementById('modalTitle');
+        const iconDiv = document.getElementById('modalIcon');
         
-        title.innerText = aprovado ? "Aprovado!" : "Reprovado";
+        title.innerText = aprovado ? "Aprovado" : "Reprovado";
         title.className = "modal-status " + (aprovado ? "status-aprovado" : "status-reprovado");
-        document.getElementById('modalIcon').innerHTML = aprovado ? "🏆" : "❌";
+        
+        iconDiv.innerHTML = aprovado 
+            ? '<i class="fas fa-check-circle" style="color: var(--green);"></i>' 
+            : '<i class="fas fa-times" style="color: var(--red);"></i>';
         
         document.getElementById('resAcertos').innerText = score;
         document.getElementById('resErros').innerText = questions.length - score;
