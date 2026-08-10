@@ -11,7 +11,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-/* VARIAVEIS DE CORES DO CARTA MESTRE */
+/* VARIAVEIS DE CORES */
 :root {
     --primary: #04182B !important;
     --primary-light: #112B47 !important;
@@ -65,7 +65,7 @@ header {
 }
 
 .brand-container {
-    min-width: 0; 
+    min-width: 0; /* Permite encolher se necessário para não empurrar os botões */
     flex-shrink: 1;
 }
 
@@ -335,43 +335,41 @@ header {
     });
     document.addEventListener('dragstart', (e) => e.preventDefault());
 
-    // CONFIGURAÇÃO SUPABASE MANTIDA DO CARTA MESTRE
+    // CONFIGURAÇÃO SUPABASE
     const SUPABASE_URL = 'https://vhcioxwuombrqkhkipdh.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_XW2XlyZRe0IOotl6fpRXGQ_w6_-32AF';
     const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    // DADOS ATUALIZADOS PARA O EXAME 3
     const EXAME_ID_UNICO = "exame_teorico_3"; 
     const NOME_DO_EXAME = "Exame Teórico 3";
 
-    // BANCO DE DADOS (Perguntas do Inatro Pro V7 adaptadas ao formato Carta Mestre)
+    // O BANCO DE DADOS INTACTO DO EXAME 3
     const questions = [
-        { 
-            id: 1, 
-            img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgHjEzKVK1N9yOimUzGKZTsc8x0p0_hoxYU07cm07Uzcy4WHQg3IOWG9jUVm-z94fz4bfT25iDU0wBUWqnCqzZhTdAWMbB2NstvpmJZVdjU7tlFjoszWwiROmppbSmdbHbHtWBHG8FsL8pFVPM2SXeMB3RUHMRnELIDAYodxT5wv5p6EZfYkGmoi7ZJjamC/s320/1000040411.jpg", 
-            q: "Posso circular pela parte direita da faixa de rodagem numa via urbana com duplo sentido e uma faixa para cada sentido?", 
-            options: {
-                A: "Sim, na aproximação a um cruzamento em que pretenda mudar de direcção à direita.", 
-                B: "Sim, em via urbana posso circular pela via da esquerda ou a da direita.", 
-                C: "Sim, para ultrapassar.", 
-                D: "Não."
-            }, 
-            ans: "C" 
-        },
-        { 
-            id: 2, 
-            img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhDslrQAdb_cCrlzFGKBATP2qe2qI_anl4w8S8PchLClBnq8PT4XFqCu7rjrNrZ1waEHWGKL7-H9Cg_SqoipKlTAe2N1dtAOQpImbkndlCEEXukqzkMcrYxXrPkjJMVS4vT2gON7xI_WOwuD39zENmI5e4QGCI-A4PKIqI6g7VL898Tu6_dQC-OGoffM_gO/s320/1000040414.jpg", 
-            q: "O que indica este sinal?", // A sua pergunta cortou aqui, completei para não quebrar o código
-            options: {
-                A: "Opção A.", 
-                B: "Opção B.",
-                C: "Opção C."
-            }, 
-            ans: "A" 
-        }
-        
-        // ---> COLE AS RESTANTES PERGUNTAS AQUI ABAIXO SEGUINDO A MESMA ESTRUTURA <---
-        
+        { id: 1, img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgHjEzKVK1N9yOimUzGKZTsc8x0p0_hoxYU07cm07Uzcy4WHQg3IOWG9jUVm-z94fz4bfT25iDU0wBUWqnCqzZhTdAWMbB2NstvpmJZVdjU7tlFjoszWwiROmppbSmdbHbHtWBHG8FsL8pFVPM2SXeMB3RUHMRnELIDAYodxT5wv5p6EZfYkGmoi7ZJjamC/s320/1000040411.jpg", q: "Posso circular pela parte direita da faixa de rodagem numa via urbana com duplo sentido e uma faixa para cada sentido?", options: {A: "Sim, na aproximação a um cruzamento em que pretenda mudar de direcção à direita.", B: "Sim, em via urbana posso circular pela via da esquerda ou a da direita.", C: "Sim, para ultrapassar.", D: "Não."}, ans: "C" },
+        { id: 2, img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhDslrQAdb_cCrlzFGKBATP2qe2qI_anl4w8S8PchLClBnq8PT4XFqCu7rjrNrZ1waEHWGKL7-H9Cg_SqoipKlTAe2N1dtAOQpImbkndlCEEXukqzkMcrYxXrPkjJMVS4vT2gON7xI_WOwuD39zENmI5e4QGCI-A4PKIqI6g7VL898Tu6_dQC-OGoffM_gO/s320/1000040414.jpg", q: "O que indica o sinal?", options: {A: "Fim da fila de trânsito à esquerda.", B: "Convergência de filas de trânsito.", C: "Fim da fila de trânsito à direita."}, ans: "B" },
+        { id: 3, img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhj5CfboAtrlEa4d_tutRI85cFdxXUm3V8oQc4jJmv9X1BrGko1tr3kPoBSC3B1RwSmip4pfWixE-5BlMzz-Y93uWprWFEMgqgl5qkqhoZr46Cdws1Ojp972D7eFxjyFnI3n2jHyXjibmDB1Qc8YUdY_CvrSdWqVoX7Q5tXEBxSGT_n9l4q0JTLJvFBB__d/s320/1000040420.jpg", q: "Em situações de chuva forte:", options: {A: "Aumenta a probabilidade de aquaplanagem (hidroplanagem).", B: "Reduz a probabilidade de aquaplanagem (hidroplanagem).", C: "Reduz a probabilidade de aquaplanagem (hidroplanagem), sobretudo a velocidade moderada."}, ans: "A" },
+        { id: 4, img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh4IekuLk30QYodpMJYPzlpSHb8AP15u85LJQwIZxaLprTtfVENTEins1yP6gsSh22S8Wq0gcuuHF4CBYFTPHT6plDuxqoyBFFOXaAvvCRsON8dt9pzMT4o9fjZgKIgHyk3_yGWDK83-SnwrbglV431zYTgJYI7lu86p_crHhJ5Qd6FiHEU2Ek9Zp-_GGYk/s320/1000040436.jpg", q: "O significado destes sinais é:", options: {A: "A-Parque de descanso; B - Parque de estacionamento para veículos do corpo diplomático.", B: "A-Parque de estacionamento; B - Parque de estacionamento para veículos do corpo diplomático.", C: "A-Parque de estacionamento; B - Parque de estacionamento para veículos do governo.", D: "A-Parque de estacionamento; B - Parque de estacionamento para veículos do ministério."}, ans: "B" },
+        { id: 5, img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg4oPHMelxo9-0BneAQD3HDkSHlCwtCnaNCLOSP_33imyNw1etEbLj9JRHg-XV5ubm_gtydyzOsO2tH_WXEPG2fsR6MDPR9EGo4FhCSz4PMnKneme5kZtDprG76F9ltds6EJDmqZlam9d0bRq5WNqiXMvDH-JT0ri5J8utYrKpSgQCe-fWY30UIyGnvdyzT/s320/1000040439.jpg", q: "Como medida de prevenção, quando o piso da via está molhado, deve:", options: {A: "Parar.", B: "Reduzir a velocidade.", C: "Aumentar um pouco a velocidade para que a distância de paragem diminua.", D: "Reduzir a distância de segurança."}, ans: "B" },
+        { id: 6, img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgZswGK3jEO9ou7hxKMBWa3s-fVElpIb07wj6FpuxHhRC3fQFGCHUBcblHpPLiNNbyWmyC5nTUlcUrZDl1s80tnnckNdPdD98cGrjWdPCW7p-utg69PbDwn_9a4EnM2jvxlWf0-WJ6IIrFzX7BLpE9ipN51nrhig38ziiN8MNn-8OjeIPP4ojx-VFQ50abR/s320/1000040442.jpg", q: "O que indica o sinal circular com fundo azul?", options: {A: "Via obrigatória para veículos de construção.", B: "Via obrigatória para autocarros de expressão.", C: "Via obrigatória para circulação de veículos de dimensões anormais."}, ans: "C" },
+        { id: 7, img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhNe5Lr1V_1x68Y2fJHc1sXseHXJpAvGf_29zSZy2Y_GM4vLq0vTwPAqycs8jwJi7q2j6TyP5b6Gc0sreZUVJANXSqLUmQ6beJd_cAZ1apMfvjVYwk508rgtjGk54D5NJao8BXzMZQ7xchy07YVwVwfthuI2gmP65U6VcOg4TmfelTRy_29qtBYZAwDAbGy/s320/1000040445.jpg", q: "O que se entende por sanção?", options: {A: "A repetição de valores positivos.", B: "A repetição de valores negativos.", C: "O prémio ou castigo anexo às acções humanas."}, ans: "C" },
+        { id: 8, img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgimQaFSafCCmZW6vuba5bU6ObJiA_5zv9IK2nRPp3kd7n6ussdAmA0Z3SjTxmEeogLHbayPeQcd6SvuIc-IGjbbYmT4hWvumbztZWX_EKrtKLg1fWUY4SHGmVy9BwXGn7CVGYBuhUHhyphenhyphenpEsZGlYaROAaxLJHtj9C3Efsf59gubwjaeMbvtoZLXmp9QZrCz/s320/1000040448.jpg", q: "Os condutores não podem exceder as seguintes velocidades (km/h):", options: {A: "Pesados de passageiros: localidade 60, fora 100.", B: "Pesados de passageiros: localidade 50, fora 100.", C: "Pesados de passageiros: localidade 60, fora 120."}, ans: "A" },
+        { id: 9, img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhGJfbGDCVVnw25FCKVoETIa1zAzQY66-ZIdFfJ1CMdiY4toiTqIL3mpmWaOfYusofjySw_jzeX-KiD7osNRIkCILFqgYEJDOzM4ba_whhW_MpO2fPveRggp49U5rx6fBMZGvIs8kju7II6TEsV3h4FaiuxGv5lnNYMsbufwGvtz8xlYrgdkbd6UtrllGjS/s320/1000040454.jpg", q: "O significado deste sinal é:", options: {A: "Queda de pedras à direita.", B: "Queda de pedras à esquerda.", C: "Estrada com buracos."}, ans: "B" },
+        { id: 10, img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh5iN3j1mwm7Dq9qG4nb0HmmcJa-mF1Yt9-b3EywW0P4Mhyphenhyphenn-iinQOc-SLTwJZsscP3Fhwj3EMvuLWz3-UFiScRcjpVg1qooF9kJQHPGAjS3CiIKj7P1jyBBOIyDyufx-PiDXAXnk07kHwcQ8lTcnzvyHjNuU-3n0-DKpGC2N9oOT9QdZP6RsSwVfIu6KUO/s320/1000040462.jpg", q: "O significado deste sinal é:", options: {A: "Prioridade à esquerda.", B: "Prioridade à direita.", C: "Trânsito nos dois sentidos."}, ans: "C" },
+        { id: 11, img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjVCmqu__II2WhVXaH67KkphOvihKA3TBPpY2nyTpFZKY-J-MtrGiFMdEy7CMrgzNV3WGJIc4jgl8u0nxGeJQjzjiSfKauNVfosG7hlO95WFSbN3w9rNurEp7Wddz3ddnNikaYjTybhi5vKoOUu2MeCLR1kJsTDTqen7fH1RGeBE37zI81I00uAAkRpto-4/s320/1000040465.jpg", q: "Um pára-brisas sujo, à noite e com chuva, pode:", options: {A: "Melhorar a visibilidade periférica.", B: "Diminuir o tempo de reacção.", C: "Diminuir a capacidade de ver as alternativas e aumentar o tempo de análise."}, ans: "C" },
+        { id: 12, img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjMGXTpB519RhuhiMXQ8oF7MvvmU2mTN5MlIGhp5B8EAPUyPEv7UCJctJkZETiiYPPsWl0a1R_ersAJuAbhhPWL_5TRii0I5zpEJN2m3IG19MBA9nTRJDG233pLjhJRNyXj2h51GCWeQSFCPCLykNgpXPLs9cws9g38Jm-VOipcFaZ0nkR4hvNLC40NlGOT/s320/1000040468.jpg", q: "Velocidade para Motociclos com carro:", options: {A: "Localidade 40, fora 70.", B: "Localidade 50, fora 70.", C: "Localidade 60, fora 90."}, ans: "B" },
+        { id: 13, img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjJPqbqe4uOkSMGBJQbTrrjdFoNwGt00cSl121C9eUBQysqiLPGlUK_16R3QPB1FqEKQvv6aqU4jkjrkl7JxrG055_5H-fmpZdfA1YwgiR3KvuAH33MiAuz6T4Jgy98v-aL1x08W2RH8lrjqS8uJ2i9n8153g2BgumzfgrgFt2heShMmrRbjO7x4mSsni6k/s320/1000040471.jpg", q: "O significado deste sinal é:", options: {A: "Trabalhos na estrada.", B: "Obras adjudicadas.", C: "Piso escorregadio."}, ans: "A" },
+        { id: 14, img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhUsUW_WlGcZpuoOqaSugm5qZHTgWpBLxxyTikRj_RYBVjrgfUqfXg2dVSPpHrjlP_WKSGkxkhU8fkYfpyH963DL7k221FD_sqvvs1TtD2WRb8u3QyFmeOmFtk2ZmzURVLTGSXtPhBRf1Zz6n_K4Bfq8obCsjoCfgRR4-KDKrPr7mLTMdqCGLb2GoVwnZ8A/s320/1000040474.jpg", q: "As luzes devem ser usadas no nevoeiro:", options: {A: "De dia ou de noite.", B: "Só durante a noite.", C: "Apenas se o nevoeiro for denso."}, ans: "A" },
+        { id: 15, img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhx-vKfR_8dyeM1MLz_ELnxJFsqM-ksEx4B7BlqkZiADUCsT0u7I1gR6GdVqDWCm3A_gk5Y4iRO2tKgo1azxkFatvbxf92GfyxQLhg0VK4bp6wymESfwBHyiwJHhWbRAXnu3db1SFxjd2rzCX_VNIt6EgI-V9veBrGNEoe8J6BFp9oqdd2uefigrxmaw8ya/s320/1000040485.jpg", q: "Ao seguir um velocípede no mesmo sentido, deve:", options: {A: "Buzinar insistentemente.", B: "Ultrapassar rápido.", C: "Ter em atenção a instabilidade do veículo."}, ans: "C" },
+        { id: 16, img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjFbWuyLhn6Z-13K3diwz5xOPv89lY8FQHUdvhHaDk_ID2tcWhHrm89p0NZ9hOUNfP9SQp6wyq9ltqQ0s_ASOA4TFB7V8O19kqwUTA94axrwLbzdx6NQuOC-Izwf5rnkxsr57P1-Fe4tZgtlF_MeI5sYlvs3w-NH5EaGfcuCcWsa1FVySrE_Cl5qvNJb2Yl/s320/1000040488.jpg", q: "O sinal indica proibição de peso superior a 2 toneladas:", options: {A: "Total do veículo.", B: "Por eixo.", C: "Da carga apenas."}, ans: "B" },
+        { id: 17, img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjNPYTrJy8n3_v32n5Z8cWclrdDCHhubg1wjmMmPLMw5vYRrVRWFeLeZnJwvnYJjCMsNwG9hIP0HN8_S2zn65k_woUqbNKInub3Bwnzxlmre5kTuJ_FJyhfi1QrUe_KZWMtBWWdiuchtsSiOW6nvdbrDmxroYsficM-yAkK8Lee2JVSnAl5rdwgwd81RmwM/s320/1000040491.jpg", q: "O sinal do agente indica para parar o tráfego que venha:", options: {A: "Da frente e retaguarda.", B: "Da esquerda.", C: "Da retaguarda."}, ans: "C" },
+        { id: 18, img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg8q5MlBbcCJ3A3B2IRuFC01le7mEUwcN3o75N0rIxfgdPOHa3ESWoa0TOR7J3_9Vo-lzN0BMBmYsWFd6Kfb64W452-Ey0pvrMHnXKMET_cq_PHhOFTHOeeMZ1UtmcT5YHiJnt1fxrKw2Z9SKeJ32yyBmTimdpQbeajWm_4azRcoq-t4GTCjRWSvrsCtG3B/s320/1000040494.jpg", q: "O condutor está sujeito à fadiga em trânsito intenso?", options: {A: "Não, por causa da baixa velocidade.", B: "Sim, por ser uma situação monótona.", C: "Sim, e deve beber álcool para relaxar."}, ans: "B" },
+        { id: 19, img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg5CGkq9ARSA92-bhkBANFmbO4P2PIZAkED2b9tAoC-irIA2ALJ4hrfx7Ki7UUgTd-20Ad5O-8xCqU5KexX2BonCzck5LOTppPNuXGI-B313KpM0a9Vw1cfC93-aEpILYnzJhNL3Z-sAdNEz150jNmdx7aqQ8nVV5AkztmR_muHTmtxp4GNSGBKDM8Pmtr9/s320/1000040510.jpg", q: "Após ingerir álcool, ele entra no organismo via:", options: {A: "Sistema urinário.", B: "Sistema circulatório.", C: "Sistema respiratório."}, ans: "B" },
+        { id: 20, img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi7iinTERG38ir7TKG77yFMtzdbQ625r9_WsZxdHk9KccMFmOvP1CMQi8BuDpQR5W-WshT9HSydAD1guhgJGl3LwK5mrBxjm_0CeDRCItn1qRzJsYKv4FXG9FYSRoq27njVnjwBJmjsQriLcgkawWLfksAr88A8ISXHQuaeQMVJCNcSaJJxj11wurWlZ_Pa/s320/1000040513.jpg", q: "A definição de localidade é:", options: {A: "Zona sem sinalização.", B: "Zona com edificações e limites sinalizados.", C: "Zona de mata."}, ans: "B" },
+        { id: 21, img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjVCmqu__II2WhVXaH67KkphOvihKA3TBPpY2nyTpFZKY-J-MtrGiFMdEy7CMrgzNV3WGJIc4jgl8u0nxGeJQjzjiSfKauNVfosG7hlO95WFSbN3w9rNurEp7Wddz3ddnNikaYjTybhi5vKoOUu2MeCLR1kJsTDTqen7fH1RGeBE37zI81I00uAAkRpto-4/s320/1000040465.jpg", q: "Um pára-brisas sujo, à noite e com chuva, pode:", options: {A: "Melhorar a visibilidade periférica.", B: "Diminuir o tempo de reacção.", C: "Diminuir a capacidade de ver as alternativas e aumentar o tempo de análise."}, ans: "C" },
+        { id: 22, img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgkv8neq-6fgjy-RvNq2LL1t3q7V6w9ct49P1okUR9D0iU9jV20M75S7E9eLVznLGKjHtrzATuydxwfrRWXAHpOemHoOE492Xg7zVYG-ygXjeE7338HfjWYjyf_yNUlf_qXsesCLcFceMapinAddreqSOF9R0BZ5Gyl1t9JrcECreKWpFUlFQf4BB-HE96-/s320/1000040529.jpg", q: "No cruzamento com pesados, a força do ar afeta mais:", options: {A: "Outros pesados.", B: "Ligeiros e veículos de 2 rodas.", C: "Não afeta ninguém."}, ans: "B" },
+        { id: 23, img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj3ycxKM13JfziHmnr4Q4tHKwHmZ2VkpXKCSNYCcWOW-hyecvDb9M45KHlBK6YZlI_OUcEeQHUdxnYhH6lVQpab64d-H-rNV5FOQv1YYh5emIKRUC50ahcvli-F7cY_mUGwpvWiiuFiDGHsxlVlSYLXFRW0IbAfgYwtCtVLc6JOK5P6Uk3xaz1baqYvnkAD/s642/1000032298.jpg", q: "Visibilidade reduzida é quando não se avista a via numa extensão de:", options: {A: "50 metros.", B: "100 metros.", C: "200 metros."}, ans: "A" },
+        { id: 24, img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh3hwxf72r1qK_QPw4C_-7Fmr3rHlkmmGO372j5H7xXwdCiR1Xrj7pwGZ_WiBoBBIufkoj4JsVGjC9tt7kBFAIFUrFgn4xGtsClJS34Pwo_PtqvGiX8a2C8g2QuNAfTTsByrediU3bwyMYZ1Nel18Q78xjgK3HNvAlGUW7tkG-UsVwHHLX8kV4tv2MzJGL7/s668/1000032379.jpg", q: "O que indica o sinal?", options: {A: "Via rápida.", B: "Existência de portagem.", C: "Sentido obrigatório."}, ans: "B" },
+        { id: 25, img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhvYQS3abOT3VPvDCs_ZvLsVoCRxhm1-pAzDg5Ejj_UVqeWBwmi6IjeAO7pBkJs9Ysy6ZPd9lIbj8lb7EU-jyyOULNIM40c1-iwFsPFohmTYv6v8RzB7mlCTUeKrUyZP9V7nioveBVRmT1K-UI5n_SutFGp5szIHwhexwEV94_ZfWhrMfQSLsTE5XmV5KMs/s648/1000032348.jpg", q: "Considera-se morte por acidente de viação:", options: {A: "Aquela que ocorre até 30 dias após o registo do sinistro.", B: "Só aquela que ocorre no local do sinistro.", C: "Só aquela aquela que ocorre à caminho da unidade sanitária.", D: "Aquela que ocorre 30 dias depois do registo do sinistro."}, ans: "A" }
     ];
 
     let currentIdx = 0;
