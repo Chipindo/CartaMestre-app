@@ -581,5 +581,32 @@
     window.onload = conectarAoPlugin;
 </script>
 
+
+
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Verifica se a página atual é a página principal (onde o app DEVE fechar se clicar em voltar)
+        var paginaAtual = window.location.pathname;
+        var ehHome = paginaAtual.endsWith("index.html") || paginaAtual === "/";
+        
+        if (!ehHome) {
+            // 1. Cria um "degrau invisível" no histórico assim que a página carrega
+            window.history.pushState({ bloqueioVoltar: true }, null, window.location.href);
+
+            // 2. Intercepta o clique no botão físico de voltar do telemóvel
+            window.addEventListener("popstate", function(event) {
+                // 3. Força o navegador a voltar para a página REAL anterior (ex: da página 3 para a 2)
+                window.history.back();
+            });
+        }
+    });
+</script>
+
+
+
+    
+
 </body>
 </html>
