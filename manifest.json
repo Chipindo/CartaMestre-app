@@ -1,10 +1,11 @@
 {
   "name": "Carta Mestre",
   "short_name": "CartaMestre",
-  "start_url": "./index.html",
+  "start_url": "https://onchip360.com/",
+  "scope": "https://onchip360.com/",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#000000",
+  "theme_color": "#ffffff",
   "description": "Guia de exames de condução e testes.",
   "icons": [
     {
