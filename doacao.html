@@ -12,8 +12,8 @@
         body { background-color: #CBD5E1; display: flex; justify-content: center; min-height: 100dvh; }
         .app-container { width: 100%; max-width: 600px; min-height: 100dvh; background-color: #F8FAFC; display: flex; flex-direction: column; padding-bottom: 40px; box-shadow: 0 0 20px rgba(0,0,0,0.1); }
 
-        .top-section { background-color: #0F172A; color: #FFFFFF; border-radius: 0 0 24px 24px; padding: 24px 24px 40px; margin-bottom: 24px; text-align: center; }
-        .btn-back { color: #94A3B8; text-decoration: none; font-size: 1rem; display: inline-flex; align-items: center; gap: 8px; margin-bottom: 20px; position: absolute; left: 24px; top: 24px;}
+        .top-section { background-color: #0F172A; color: #FFFFFF; border-radius: 0 0 24px 24px; padding: 24px 24px 40px; margin-bottom: 24px; text-align: center; position: relative; }
+        .btn-back { color: #94A3B8; text-decoration: none; font-size: 1rem; display: inline-flex; align-items: center; gap: 8px; position: absolute; left: 24px; top: 24px; }
         .heart-icon { font-size: 3rem; color: #EC4899; margin: 30px 0 15px; animation: pulse 2s infinite; }
         .header-title { font-size: 1.5rem; font-weight: 700; color: #F8FAFC; margin-bottom: 12px; }
         .header-subtitle { font-size: 0.95rem; color: #94A3B8; line-height: 1.5; padding: 0 15px; }
@@ -22,17 +22,22 @@
 
         .content-section { padding: 0 24px; flex: 1; margin-top: -20px; }
         
-        .donation-card { background: #FFFFFF; border-radius: 16px; padding: 24px; border: 1px solid #E2E8F0; box-shadow: 0 8px 25px rgba(0,0,0,0.05); text-align: center; margin-bottom: 20px; }
-        .payment-title { font-size: 1rem; font-weight: 700; color: #1E293B; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 0.5px;}
+        .donation-card { background: #FFFFFF; border-radius: 16px; padding: 20px; border: 1px solid #E2E8F0; box-shadow: 0 8px 25px rgba(0,0,0,0.05); text-align: center; margin-bottom: 20px; }
+        .payment-title { font-size: 1rem; font-weight: 700; color: #1E293B; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 0.5px; }
         
-        .wallet-number { font-size: 2rem; font-weight: 800; color: #1E293B; letter-spacing: 2px; margin-bottom: 5px; }
-        .wallet-name { font-size: 1rem; color: #64748B; font-weight: 500; margin-bottom: 24px; }
+        /* Lista de Métodos de Pagamento */
+        .payment-list { display: flex; flex-direction: column; gap: 16px; margin-bottom: 20px; }
+        .payment-item { display: flex; align-items: center; justify-content: space-between; background: #F8FAFC; border: 1px solid #E2E8F0; padding: 12px 16px; border-radius: 12px; }
+        .payment-info { display: flex; align-items: center; gap: 14px; text-align: left; }
+        .payment-info img { height: 40px; width: 45px; object-fit: contain; }
+        .method-name { font-size: 0.8rem; font-weight: 700; color: #64748B; text-transform: uppercase; display: block; }
+        .method-number { font-size: 1.05rem; font-weight: 800; color: #1E293B; letter-spacing: 0.5px; }
         
-        .logos-container { display: flex; justify-content: center; align-items: center; gap: 20px; margin-bottom: 24px; }
-        .logos-container img { height: 45px; object-fit: contain; }
-        
-        .btn-copy { display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 14px; border-radius: 10px; background: #F1F5F9; color: #1E293B; font-weight: 600; text-decoration: none; border: 1px solid #CBD5E1; cursor: pointer; transition: background 0.2s; }
-        .btn-copy:hover { background: #E2E8F0; }
+        .btn-copy-small { background: #FFFFFF; border: 1px solid #CBD5E1; padding: 8px 12px; border-radius: 8px; color: #1E293B; font-size: 0.85rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all 0.2s; }
+        .btn-copy-small:hover { background: #E2E8F0; }
+
+        .account-holder { font-size: 0.9rem; color: #64748B; font-weight: 600; padding: 12px; background: #F1F5F9; border-radius: 10px; margin-bottom: 15px; }
+        .account-holder span { color: #1E293B; font-weight: 700; }
 
         .thank-you-msg { font-size: 0.85rem; color: #64748B; line-height: 1.5; text-align: center; padding: 0 10px; }
     </style>
@@ -43,24 +48,60 @@
         <a href="javascript:history.back()" class="btn-back"><i class="fas fa-arrow-left"></i> Voltar</a>
         <div class="heart-icon"><i class="fas fa-hand-holding-heart"></i></div>
         <h1 class="header-title">Apoie o Projeto</h1>
-        <p class="header-subtitle">O Inatro Pro é desenvolvido pela OLC para ajudar estudantes. Qualquer contribuição ajuda a manter os servidores online.</p>
+        <p class="header-subtitle">O Carta Mestre é desenvolvido para ajudar estudantes. Qualquer contribuição ajuda a manter os servidores online.</p>
     </div>
 
     <div class="content-section">
         <div class="donation-card">
             <div class="payment-title">Dados para Contribuição</div>
             
-            <div class="wallet-number">82 170 1000</div>
-            <div class="wallet-name">Onésio Chipindo</div>
-            
-            <div class="logos-container">
-                <img src="https://carta.rn.co.mz/wp-content/uploads/2026/07/M-Pesa-modified.png" alt="M-Pesa">
-                <img src="https://carta.rn.co.mz/wp-content/uploads/2026/07/e-Mola-modified.png" alt="e-Mola">
+            <div class="account-holder">
+                Titular: <span>Onésio Chipindo</span>
             </div>
-            
-            <button class="btn-copy" onclick="copiarNumero()">
-                <i class="fas fa-copy"></i> Copiar Número
-            </button>
+
+            <div class="payment-list">
+                <!-- E-Mola -->
+                <div class="payment-item">
+                    <div class="payment-info">
+                        <img src="https://carta.rn.co.mz/wp-content/uploads/2026/07/e-Mola-modified.png" alt="e-Mola">
+                        <div>
+                            <span class="method-name">e-Mola</span>
+                            <span class="method-number">82 170 1000</span>
+                        </div>
+                    </div>
+                    <button class="btn-copy-small" onclick="copiarNumero('821701000', this)">
+                        <i class="fas fa-copy"></i> Copiar
+                    </button>
+                </div>
+
+                <!-- M-Pesa -->
+                <div class="payment-item">
+                    <div class="payment-info">
+                        <img src="https://carta.rn.co.mz/wp-content/uploads/2026/07/M-Pesa-modified.png" alt="M-Pesa">
+                        <div>
+                            <span class="method-name">M-Pesa</span>
+                            <span class="method-number">85 646 5217</span>
+                        </div>
+                    </div>
+                    <button class="btn-copy-small" onclick="copiarNumero('856465217', this)">
+                        <i class="fas fa-copy"></i> Copiar
+                    </button>
+                </div>
+
+                <!-- MKesh -->
+                <div class="payment-item">
+                    <div class="payment-info">
+                        <img src="https://carta.rn.co.mz/wp-content/uploads/2026/07/mcell.png" alt="mKesh">
+                        <div>
+                            <span class="method-name">mKesh</span>
+                            <span class="method-number">82 170 1000</span>
+                        </div>
+                    </div>
+                    <button class="btn-copy-small" onclick="copiarNumero('821701000', this)">
+                        <i class="fas fa-copy"></i> Copiar
+                    </button>
+                </div>
+            </div>
         </div>
         
         <p class="thank-you-msg">
@@ -68,12 +109,18 @@
         </p>
     </div>
 </div>
+
 <script>
-    function copiarNumero() {
-        navigator.clipboard.writeText("821701000");
-        const btn = document.querySelector('.btn-copy');
-        btn.innerHTML = '<i class="fas fa-check" style="color:#10B981"></i> Número Copiado!';
-        setTimeout(() => { btn.innerHTML = '<i class="fas fa-copy"></i> Copiar Número'; }, 2000);
+    function copiarNumero(numero, btn) {
+        navigator.clipboard.writeText(numero);
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-check" style="color:#10B981"></i> Copiado!';
+        btn.style.borderColor = '#10B981';
+        
+        setTimeout(() => { 
+            btn.innerHTML = originalText; 
+            btn.style.borderColor = '#CBD5E1';
+        }, 2000);
     }
     
     document.addEventListener("DOMContentLoaded", function() {
