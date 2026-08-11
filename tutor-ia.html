@@ -2,611 +2,154 @@
 <html lang="pt">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chatbot - Tutor de Condução IA</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Carta Mestre - Instrutor IA</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        /* Estilos modernos e profissionais */
-        body { 
-            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            background: linear-gradient(135deg, #e0eafc, #cfdef3); 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            height: 100vh; 
-            margin: 0; 
-        }
+        :root { --primary: #2563eb; --bg: #f8fafc; --text-main: #1e293b; --border: #e2e8f0; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
+        body { background-color: var(--bg); display: flex; flex-direction: column; height: 100vh; }
         
-        .chat-container { 
-            width: 100%; 
-            max-width: 450px; 
-            height: 90vh; 
-            background: #ffffff; 
-            border-radius: 16px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15); 
-            display: flex; 
-            flex-direction: column; 
-            overflow: hidden; 
-            transition: all 0.3s ease;
-        }
+        .header { background: white; padding: 15px 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); text-align: center; font-weight: bold; font-size: 18px; color: var(--primary); }
         
-        /* 4 e 5. PERFIL DO PROFESSOR, STATUS ONLINE E CONTADOR DE ALUNOS NO CABEÇALHO */
-        .chat-header { 
-            background: linear-gradient(135deg, #0056b3, #007bff); 
-            color: white; 
-            padding: 15px 20px; 
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1); 
-            z-index: 10;
-            display: flex;
-            align-items: center;
-            justify-content: space-between; /* Separa o perfil dos alunos online */
-        }
-
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .header-right {
-            display: flex;
-            align-items: center;
-            background: rgba(255, 255, 255, 0.2);
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 500;
-            gap: 6px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-
-        .profile-pic {
-            width: 45px;
-            height: 45px;
-            background: #ffffff;
-            color: #0056b3;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 22px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
-
-        .profile-info {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        .profile-name {
-            font-weight: 600; 
-            font-size: 16px; 
-            margin-bottom: 3px;
-            white-space: nowrap;
-        }
-
-        .profile-status {
-            font-size: 12px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-weight: 400;
-        }
-
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            background-color: #2ecc71; /* Verde brilhante para indicar Online */
-            border-radius: 50%;
-            box-shadow: 0 0 5px #2ecc71;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.7); }
-            70% { box-shadow: 0 0 0 6px rgba(46, 204, 113, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); }
-        }
+        .chat-container { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
         
-        .chat-box { 
-            flex: 1; 
-            padding: 20px; 
-            overflow-y: auto; 
-            background: #f4f7f6; 
-            display: flex; 
-            flex-direction: column; 
-            gap: 15px; 
-            scroll-behavior: smooth; 
-        }
-
-        /* Estilização da barra de rolagem */
-        .chat-box::-webkit-scrollbar { width: 6px; }
-        .chat-box::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-        .chat-box::-webkit-scrollbar-track { background: transparent; }
+        .msg { max-width: 85%; padding: 12px 16px; border-radius: 12px; font-size: 15px; line-height: 1.4; animation: fadeIn 0.3s ease; }
+        .msg.ia { background: white; border: 1px solid var(--border); align-self: flex-start; border-bottom-left-radius: 4px; }
+        .msg.user { background: var(--primary); color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
         
-        .message { 
-            padding: 14px 18px; 
-            border-radius: 20px; 
-            max-width: 80%; 
-            word-wrap: break-word; 
-            font-size: 15px; 
-            line-height: 1.5; 
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
+        .input-area { background: white; padding: 15px; border-top: 1px solid var(--border); display: flex; gap: 10px; }
+        input[type="text"] { flex: 1; padding: 12px; border: 1.5px solid var(--border); border-radius: 20px; outline: none; font-size: 15px; }
+        input[type="text"]:focus { border-color: var(--primary); }
+        button { padding: 0 20px; background: var(--primary); color: white; border: none; border-radius: 20px; font-weight: bold; cursor: pointer; }
+        button:disabled { background: #94a3b8; }
         
-        .bot { 
-            background: #ffffff; 
-            align-self: flex-start; 
-            border-bottom-left-radius: 4px; 
-            color: #333333; 
-            border: 1px solid #eaeaec;
-        }
-        
-        .user { 
-            background: linear-gradient(135deg, #007bff, #0056b3); 
-            color: white; 
-            align-self: flex-end; 
-            border-bottom-right-radius: 4px; 
-        }
-
-        /* 1. ANIMAÇÃO DE DIGITANDO */
-        .typing-indicator {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            padding: 14px 18px;
-            background: #ffffff;
-            border: 1px solid #eaeaec;
-            border-radius: 20px;
-            border-bottom-left-radius: 4px;
-            align-self: flex-start;
-            width: fit-content;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
-        .typing-dot {
-            width: 6px;
-            height: 6px;
-            background: #007bff;
-            border-radius: 50%;
-            animation: typingBounce 1.4s infinite ease-in-out both;
-        }
-        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
-        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
-        @keyframes typingBounce {
-            0%, 80%, 100% { transform: scale(0); opacity: 0.5; }
-            40% { transform: scale(1); opacity: 1; }
-        }
-        
-        .input-area { 
-            display: flex; 
-            padding: 15px; 
-            background: white; 
-            gap: 10px; 
-            border-top: 1px solid #eee; 
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.02);
-            z-index: 10;
-        }
-        
-        input[type="text"] { 
-            flex: 1; 
-            padding: 12px 16px; 
-            border: 1px solid #ddd; 
-            border-radius: 25px; 
-            outline: none; 
-            font-size: 15px; 
-            transition: all 0.3s ease;
-            background: #f9f9f9;
-        }
-        
-        input[type="text"]:focus {
-            border-color: #007bff;
-            background: #ffffff;
-            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15);
-        }
-        
-        button { 
-            padding: 12px 20px; 
-            background: #007bff; 
-            color: white; 
-            border: none; 
-            border-radius: 25px; 
-            cursor: pointer; 
-            font-weight: 600; 
-            font-size: 15px;
-            transition: all 0.3s ease; 
-            box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
-        }
-        
-        button:hover:not(:disabled) { 
-            background: #0056b3; 
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(0, 123, 255, 0.4);
-        }
-        
-        button:disabled { 
-            background: #d6d6d6; 
-            cursor: not-allowed; 
-            box-shadow: none;
-            color: #888;
-        }
-
-        /* Suporte a negrito nas mensagens */
-        .message strong { color: #111; }
-        .user strong { color: #fff; }
-
-        /* 2. LAYOUT MOBILE E RESPONSIVO PARA QUALQUER DISPOSITIVO */
-        @media (max-width: 600px) {
-            body {
-                background: #ffffff;
-            }
-            .chat-container {
-                max-width: 100%;
-                width: 100vw;
-                height: 100vh;
-                height: 100dvh; /* Suporte moderno para telas móveis */
-                border-radius: 0;
-                box-shadow: none;
-            }
-            .profile-name { font-size: 14px; }
-            .chat-header { padding: 12px 15px; }
-            .header-right { font-size: 11px; padding: 5px 8px; }
-        }
-        
-        /* Ajuste para telas gigantes (TVs e Monitores Grandes) */
-        @media (min-width: 1600px) {
-            .chat-container {
-                max-width: 600px;
-                height: 85vh;
-            }
-            .message { font-size: 18px; }
-            input[type="text"], button { font-size: 18px; }
-        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
-<div class="chat-container">
-    <div class="chat-header">
-        <div class="header-left">
-            <div class="profile-pic">
-                <i class="fas fa-user-tie"></i>
-            </div>
-            <div class="profile-info">
-                <div class="profile-name"><?php echo $nome_professor; ?></div>
-                <div class="profile-status">
-                    <div class="status-dot"></div>
-                    <span>Online no Servidor</span>
-                </div>
-            </div>
-        </div>
-        <div class="header-right" title="Alunos online neste momento">
-            <i class="fas fa-users"></i>
-            <span id="contadorAlunos">25</span>
-        </div>
+    <div class="header">🛡️ Instrutor Carta Mestre</div>
+    
+    <div class="chat-container" id="chat-box">
+        <div class="msg ia">Olá! Sou o teu instrutor virtual. Que dúvidas tens sobre o código da estrada?</div>
     </div>
-    <div class="chat-box" id="chatBox"></div>
+
     <div class="input-area">
-        <input type="text" id="userInput" placeholder="Aguardando conexão..." disabled onkeypress="if(event.key === 'Enter') enviarMensagem()">
-        <button id="btnEnviar" onclick="enviarMensagem()" disabled>Enviar</button>
+        <input type="text" id="user-input" placeholder="Escreve a tua dúvida..." onkeypress="if(event.key === 'Enter') enviarMensagem()">
+        <button id="btn-send" onclick="enviarMensagem()">Enviar</button>
     </div>
-</div>
 
-<script>
-    const chatBox = document.getElementById('chatBox');
-    const userInput = document.getElementById('userInput');
-    const btnEnviar = document.getElementById('btnEnviar');
-    const contadorAlunosEl = document.getElementById('contadorAlunos');
-    const apiUrl = "<?php echo $url_plugin; ?>";
-    
-    // NOVA ESTRUTURA DE DADOS: O Cérebro Pedagógico
-    let modulos = {}; 
-    let nomesModulos = [];
-    
-    // ESTADOS DO BOT (menu -> aula -> teste)
-    let faseAtual = "iniciando"; 
-    let moduloAtivo = "";
-    let perguntasAtivas = [];
-    let indicePergunta = 0;
-    let acertosModulo = 0;
-    let jaIniciou = false; // Controle de saudação
+    <script>
+        const SUPABASE_URL = 'https://vhcioxwuombrqkhkipdh.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_XW2XlyZRe0IOotl6fpRXGQ_w6_-32AF';
+        const supabaseUrl = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    // GERENCIADOR DE ALUNOS ONLINE (Lógica de 30 minutos offline)
-    function gerenciarAlunosOnline() {
-        let currentCount = localStorage.getItem('alunosOnlineCount');
-        let lastActivity = localStorage.getItem('ultimoAcessoAluno');
-        let now = Date.now();
-        let limiteOffline = 30 * 60 * 1000; // 30 minutos em milissegundos
+        let chavesAtivas = [];
+        let chaveAtualIndex = 0;
+        let regrasSistema = "";
+        let historicoMensagens = [];
 
-        if (!currentCount) {
-            // Gera entre 20 e 60 alunos na primeira vez
-            currentCount = Math.floor(Math.random() * 41) + 20; 
-        } else {
-            currentCount = parseInt(currentCount);
-        }
-
-        // Se já passou 30 minutos desde a última atividade, diminuir o número
-        if (lastActivity && (now - parseInt(lastActivity)) > limiteOffline) {
-            let perda = Math.floor(Math.random() * 8) + 3; // Sai de 3 a 10 alunos
-            currentCount = Math.max(8, currentCount - perda); // Mantém no mínimo 8 online
-        }
-
-        contadorAlunosEl.innerText = currentCount;
-        localStorage.setItem('alunosOnlineCount', currentCount);
-        registrarAtividade();
-
-        // Simula flutuações naturais (entra/sai aluno) a cada 2-5 minutos (apenas estético enquanto navega)
-        setInterval(() => {
-            let flutuacao = Math.random() > 0.5 ? 1 : -1;
-            let novoValor = parseInt(localStorage.getItem('alunosOnlineCount')) + flutuacao;
-            novoValor = Math.max(8, novoValor);
-            contadorAlunosEl.innerText = novoValor;
-            localStorage.setItem('alunosOnlineCount', novoValor);
-        }, Math.floor(Math.random() * 180000) + 120000);
-    }
-
-    // Registra a última ação do aluno para contabilizar os 30 minutos
-    function registrarAtividade() {
-        localStorage.setItem('ultimoAcessoAluno', Date.now());
-    }
-
-    // EMBARALHAR QUESTÕES ALEATORIAMENTE
-    function embaralharArray(array) {
-        let arrayCopia = [...array]; // Clona para não afetar o original
-        for (let i = arrayCopia.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [arrayCopia[i], arrayCopia[j]] = [arrayCopia[j], arrayCopia[i]]; // Troca os elementos
-        }
-        return arrayCopia;
-    }
-
-    function complementarMensagem(texto, remetente, urlImagem = null) {
-        const div = document.createElement('div');
-        div.classList.add('message', remetente);
-
-        if (urlImagem && urlImagem !== '') {
-            const img = document.createElement('img');
-            img.src = urlImagem;
-            img.style.maxWidth = '100%'; 
-            img.style.marginBottom = '12px'; 
-            img.style.borderRadius = '8px';
-            img.style.display = 'block'; 
-            div.appendChild(img); 
-        }
-
-        const spanTexto = document.createElement('span');
-        let htmlFormatado = texto.replace(/\n/g, "<br>");
-        htmlFormatado = htmlFormatado.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>"); 
-        spanTexto.innerHTML = htmlFormatado;
-        
-        div.appendChild(spanTexto);
-        
-        chatBox.appendChild(div);
-        chatBox.scrollTop = chatBox.scrollHeight;
-    }
-
-    // 1. FAZER ELE DIZER A ESCREVER (Lógica do Typing Indicator)
-    function botEscrevendo(texto, urlImagem = null, atraso = 1200) {
-        // Bloqueia input temporariamente para evitar flood enquanto o bot escreve
-        const inputFoiBloqueado = userInput.disabled;
-        userInput.disabled = true;
-        btnEnviar.disabled = true;
-
-        const idTyping = 'typing-' + Date.now();
-        const divTyping = document.createElement('div');
-        divTyping.id = idTyping;
-        divTyping.classList.add('typing-indicator');
-        divTyping.innerHTML = '<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>';
-        
-        chatBox.appendChild(divTyping);
-        chatBox.scrollTop = chatBox.scrollHeight;
-
-        setTimeout(() => {
-            const indicador = document.getElementById(idTyping);
-            if (indicador) {
-                indicador.remove();
-            }
-            complementarMensagem(texto, "bot", urlImagem);
-            
-            // Libera o input após a mensagem aparecer
-            if(!inputFoiBloqueado || faseAtual === "menu" || faseAtual === "teste" || faseAtual === "aula") {
-                userInput.disabled = false;
-                btnEnviar.disabled = false;
-                userInput.focus();
-            }
-        }, atraso);
-    }
-
-    function conectarAoPlugin() {
-        gerenciarAlunosOnline();
-        botEscrevendo("<i class='fas fa-server' style='color: #007bff;'></i> Acessando o cérebro de aulas...", null, 1000);
-        
-        fetch(apiUrl + '?requisicao=listar_perguntas')
-            .then(res => {
-                if(!res.ok) throw new Error("Erro na rede");
-                return res.json();
-            })
-            .then(dados => {
-                if(dados.length === 0) {
-                    botEscrevendo("<i class='fas fa-times-circle' style='color: #dc3545;'></i> O instrutor ainda não cadastrou nenhuma aula no sistema.", null, 1500);
-                    return;
-                }
+        // 1. Carregar Configurações do Supabase ao abrir o chat
+        async function inicializarIA() {
+            const { data, error } = await supabaseUrl.from('ConfiguracoesIA').select('*').eq('id', 1).single();
+            if (data) {
+                // Transforma as chaves separadas por vírgula num Array limpando espaços
+                chavesAtivas = data.chaves_api.split(',').map(c => c.trim()).filter(c => c !== "");
                 
-                dados.forEach(p => {
-                    let nome = p.modulo ? p.modulo.trim() : "Avaliação Geral";
-                    if (!modulos[nome]) {
-                        modulos[nome] = { texto_aula: "", perguntas: [] };
-                        nomesModulos.push(nome);
-                    }
-                    if (p.texto_aula && p.texto_aula.trim() !== "") {
-                        modulos[nome].texto_aula = p.texto_aula;
-                    }
-                    modulos[nome].perguntas.push(p);
+                // Junta as regras e o código da estrada numa instrução de sistema única
+                regrasSistema = `${data.regras}\n\nBase de Conhecimento (Código da Estrada):\n${data.codigo_estrada}`;
+            } else {
+                console.error("Erro ao ligar ao Supabase:", error);
+                adicionarMensagem("ia", "Sistema em manutenção. Não foi possível carregar as configurações.");
+            }
+        }
+
+        function adicionarMensagem(tipo, texto) {
+            const box = document.getElementById('chat-box');
+            const div = document.createElement('div');
+            div.className = 'msg ' + tipo;
+            // Converte quebras de linha em tags <br> para melhor leitura
+            div.innerHTML = texto.replace(/\n/g, '<br>');
+            box.appendChild(div);
+            box.scrollTop = box.scrollHeight;
+        }
+
+        async function enviarMensagem() {
+            const input = document.getElementById('user-input');
+            const textoUser = input.value.trim();
+            if (!textoUser) return;
+            
+            if (chavesAtivas.length === 0) {
+                alert("O administrador ainda não configurou as chaves de API da IA.");
+                return;
+            }
+
+            adicionarMensagem('user', textoUser);
+            input.value = '';
+            
+            // Adiciona a msg do user ao histórico da conversa
+            historicoMensagens.push({ role: "user", parts: [{ text: textoUser }] });
+            
+            document.getElementById('btn-send').disabled = true;
+            document.getElementById('btn-send').innerText = '...';
+
+            await pedirRespostaGemini();
+        }
+
+        // 2. Chamar o Gemini usando a chave atual. Se falhar, roda a chave.
+        async function pedirRespostaGemini() {
+            let chaveApi = chavesAtivas[chaveAtualIndex];
+            
+            const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${chaveApi}`;
+            
+            const payload = {
+                system_instruction: { parts: [{ text: regrasSistema }] },
+                contents: historicoMensagens
+            };
+
+            try {
+                const resposta = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
                 });
 
-                setTimeout(iniciarMenu, 2500);
-            })
-            .catch(erro => {
-                botEscrevendo("<i class='fas fa-exclamation-triangle' style='color: #ffc107;'></i> Falha crítica de conexão. Verifique o arquivo plugin.php.", null, 1500);
-            });
-    }
-
-    // FASE 1: O MENU DE AULAS
-    function iniciarMenu() {
-        faseAtual = "menu";
-        let textoMenu = "";
-        
-        if (!jaIniciou) {
-            textoMenu = "<i class='fas fa-hand-wave' style='color: #f1c40f;'></i> Olá! Sou o seu Tutor. O que vamos estudar hoje?\n\nDigite o número do módulo:\n";
-            jaIniciou = true;
-        } else {
-            textoMenu = "<i class='fas fa-book' style='color: #3498db;'></i> Muito bem! Vamos continuar os seus estudos.\n\nDigite o número do próximo módulo que deseja estudar:\n";
-        }
-        
-        nomesModulos.forEach((nome, index) => {
-            let nomeExibicao = nome.length > 80 ? nome.substring(0, 80) + "..." : nome;
-            textoMenu += `\n**${index + 1}.** ${nomeExibicao}`;
-        });
-
-        botEscrevendo(textoMenu, null, 1200);
-        userInput.placeholder = "Digite o número da aula...";
-    }
-
-    // FASE 2: A AULA TEÓRICA E PREPARAÇÃO
-    function iniciarAula(indexModulo) {
-        moduloAtivo = nomesModulos[indexModulo];
-        
-        // Aplica o embaralhamento nas questões do módulo escolhido
-        perguntasAtivas = embaralharArray(modulos[moduloAtivo].perguntas);
-        
-        indicePergunta = 0;
-        acertosModulo = 0;
-        faseAtual = "aula";
-
-        let conteudo = modulos[moduloAtivo].texto_aula;
-        if (conteudo) {
-            let nomeExibicao = moduloAtivo.length > 60 ? moduloAtivo.substring(0, 60) + "..." : moduloAtivo;
-            botEscrevendo(`<i class='fas fa-book-open' style='color: #3498db;'></i> **Módulo: ${nomeExibicao}**\n\n${conteudo}\n\n<i class='fas fa-hand-point-right' style='color: #e67e22;'></i> *Quando terminar de ler e estiver pronto para o teste, digite "Pronto" ou "Ok".*`, null, 2000);
-            userInput.placeholder = "Digite 'Pronto' para testar...";
-        } else {
-            iniciarTeste();
-        }
-    }
-
-    // FASE 3: O TESTE
-    function iniciarTeste() {
-        faseAtual = "teste";
-        botEscrevendo("<i class='fas fa-traffic-light' style='color: #2ecc71;'></i> Vamos ver o que aprendeu! Responda A, B, C, ou escreva a resposta.", null, 1000);
-        setTimeout(fazerPerguntaTeste, 2500); // Dá tempo do bot escrever a introdução
-    }
-
-    function fazerPerguntaTeste() {
-        if (indicePergunta < perguntasAtivas.length) {
-            let p = perguntasAtivas[indicePergunta];
-            let blocoTexto = `**Questão ${indicePergunta + 1}/${perguntasAtivas.length}:**\n${p.pergunta}\n\nA) ${p.opcaoA}\nB) ${p.opcaoB}\nC) ${p.opcaoC}`;
-            
-            botEscrevendo(blocoTexto, p.imagem, 1500);
-            userInput.placeholder = "Qual a resposta correta?";
-        } else {
-            // MENSAGEM FINAL PROFISSIONAL
-            let aproveitamento = Math.round((acertosModulo / perguntasAtivas.length) * 100);
-            let mensagemFinal = `<i class='fas fa-flag-checkered'></i> **Módulo Concluído!**\n\nVocê finalizou o estudo deste tópico.\n\n<i class='fas fa-chart-bar' style='color: #9b59b6;'></i> **Seu Desempenho:**\nAcertou **${acertosModulo}** de **${perguntasAtivas.length}** questões (${aproveitamento}%).\n\nContinue assim! Vou preparar o menu para a próxima etapa...`;
-            
-            botEscrevendo(mensagemFinal, null, 1500);
-            setTimeout(iniciarMenu, 6000); 
-        }
-    }
-
-    // MOTOR DE INTELIGÊNCIA MANTIDO
-    function motorInteligencia(textoUsuario, questaoAtual) {
-        const texto = textoUsuario.toLowerCase().trim();
-        if (texto === 'a' || texto === 'b' || texto === 'c') return texto;
-        if (texto.includes('letra a') || texto.includes('opcao a')) return 'a';
-        if (texto.includes('letra b') || texto.includes('opcao b')) return 'b';
-        if (texto.includes('letra c') || texto.includes('opcao c')) return 'c';
-
-        if (texto.length > 4) {
-            if (questaoAtual.opcaoA.toLowerCase().includes(texto)) return 'a';
-            if (questaoAtual.opcaoB.toLowerCase().includes(texto)) return 'b';
-            if (questaoAtual.opcaoC.toLowerCase().includes(texto)) return 'c';
-        }
-        return null; 
-    }
-
-    // PROCESSADOR CENTRAL DE MENSAGENS (ROTEADOR)
-    function enviarMensagem() {
-        if(userInput.disabled) return; 
-
-        const respostaOriginal = userInput.value.trim();
-        if(!respostaOriginal) return;
-
-        registrarAtividade(); // Atualiza a atividade para resetar os 30min de inatividade
-        complementarMensagem(respostaOriginal, "user");
-        userInput.value = '';
-
-        if (faseAtual === "menu") {
-            let escolha = parseInt(respostaOriginal);
-            if (!isNaN(escolha) && escolha > 0 && escolha <= nomesModulos.length) {
-                iniciarAula(escolha - 1);
-            } else {
-                botEscrevendo("<i class='fas fa-exclamation-triangle' style='color: #f39c12;'></i> Por favor, digite o NÚMERO correspondente ao módulo que deseja estudar.");
-            }
-            return;
-        }
-
-        if (faseAtual === "aula") {
-            iniciarTeste();
-            return;
-        }
-
-        if (faseAtual === "teste") {
-            let p = perguntasAtivas[indicePergunta];
-            let interpretacao = motorInteligencia(respostaOriginal, p);
-
-            if (['a', 'b', 'c'].includes(interpretacao)) {
-                if (interpretacao === p.correta) {
-                    botEscrevendo("<i class='fas fa-check-circle' style='color: #2ecc71;'></i> Exato!\n\n<i class='fas fa-chalkboard-teacher' style='color: #34495e;'></i> O Instrutor explica: " + p.explicacao, null, 1200);
-                    acertosModulo++;
-                } else {
-                    botEscrevendo("<i class='fas fa-times-circle' style='color: #e74c3c;'></i> Não foi bem isso. A resposta era a letra " + p.correta.toUpperCase() + ".\n\n<i class='fas fa-chalkboard-teacher' style='color: #34495e;'></i> O Instrutor explica: " + p.explicacao, null, 1200);
+                if (!resposta.ok) {
+                    throw new Error(`Erro na API (Status: ${resposta.status})`);
                 }
-                indicePergunta++;
-                setTimeout(fazerPerguntaTeste, 4500); 
-            } else {
-                botEscrevendo("<i class='fas fa-exclamation-triangle' style='color: #f39c12;'></i> Não entendi. Responda apenas A, B ou C, ou escreva parte da resposta.", null, 800);
+
+                const dados = await resposta.json();
+                const textoResposta = dados.candidates[0].content.parts[0].text;
+                
+                adicionarMensagem('ia', textoResposta);
+                historicoMensagens.push({ role: "model", parts: [{ text: textoResposta }] });
+                
+                resetBotao();
+
+            } catch (erro) {
+                console.error("Falha com a chave no índice", chaveAtualIndex, erro);
+                
+                // ROTATIVIDADE DE CHAVES: Se falhar, tenta a próxima chave
+                if (chaveAtualIndex < chavesAtivas.length - 1) {
+                    chaveAtualIndex++;
+                    console.log("A tentar com a próxima chave de API...");
+                    await pedirRespostaGemini(); // Recursão
+                } else {
+                    adicionarMensagem('ia', "Desculpa, os nossos servidores estão sobrecarregados neste momento. Tenta novamente mais tarde.");
+                    historicoMensagens.pop(); // Remove a última pergunta do histórico já que falhou
+                    chaveAtualIndex = 0; // Volta ao início para a próxima vez
+                    resetBotao();
+                }
             }
         }
-    }
 
-    window.onload = conectarAoPlugin;
-</script>
-
-
-
-
-
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        // Verifica se a página atual é a página principal (onde o app DEVE fechar se clicar em voltar)
-        var paginaAtual = window.location.pathname;
-        var ehHome = paginaAtual.endsWith("index.html") || paginaAtual === "/";
-        
-        if (!ehHome) {
-            // 1. Cria um "degrau invisível" no histórico assim que a página carrega
-            window.history.pushState({ bloqueioVoltar: true }, null, window.location.href);
-
-            // 2. Intercepta o clique no botão físico de voltar do telemóvel
-            window.addEventListener("popstate", function(event) {
-                // 3. Força o navegador a voltar para a página REAL anterior (ex: da página 3 para a 2)
-                window.history.back();
-            });
+        function resetBotao() {
+            document.getElementById('btn-send').disabled = false;
+            document.getElementById('btn-send').innerText = 'Enviar';
         }
-    });
-</script>
 
-
-
-    
-
+        window.onload = inicializarIA;
+    </script>
 </body>
 </html>
