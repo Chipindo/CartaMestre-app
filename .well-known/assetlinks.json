@@ -1,0 +1,9 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "com.onchip360.twa",
+        "sha256_cert_fingerprints": ["A7:DC:0A:15:BB:3E:82:A8:C0:AA:C4:6E:7A:08:A3:35:E0:E7:97:EC:9B:9C:DC:03:9F:5C:D9:C6:CC:42:DA:3E"]
+      }
+    }]
+
