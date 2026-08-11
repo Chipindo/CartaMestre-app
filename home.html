@@ -22,24 +22,18 @@
         body { background-color: #CBD5E1; color: #1E293B; display: flex; justify-content: center; min-height: 100dvh; margin: 0; overflow-x: hidden; }
         .app-container { width: 100%; max-width: 600px; min-height: 100dvh; background-color: #F8FAFC; position: relative; display: flex; flex-direction: column; padding-bottom: 80px; box-shadow: 0 0 20px rgba(0,0,0,0.1); }
         .top-section { background-color: #0F172A; color: #FFFFFF; border-radius: 0 0 24px 24px; padding: 32px 24px 24px; box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.15); margin-bottom: 24px; }
-        .prep-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
+        .prep-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; }
         .prep-info { flex: 1; }
         .prep-label { font-size: 0.75rem; text-transform: uppercase; font-weight: 600; color: #94A3B8; letter-spacing: 0.5px; margin-bottom: 8px; display: block; }
         .prep-title { font-size: 1.4rem; font-weight: 700; line-height: 1.3; color: #F8FAFC; margin-bottom: 16px; max-width: 220px; }
         .dash-indicators { display: flex; gap: 4px; margin-bottom: 12px; }
         .dash-indicators span { height: 4px; width: 16px; background-color: #334155; border-radius: 2px; }
         .dash-indicators span.active { background-color: #2563EB; }
+        .link-small { font-size: 0.8rem; color: #60A5FA; text-decoration: none; font-weight: 500; transition: opacity 0.2s; }
         .prep-circle-container { display: flex; flex-direction: column; align-items: center; gap: 12px; }
         .progress-ring { width: 75px; height: 75px; border-radius: 50%; border: 6px solid #1E293B; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: 700; color: #FFFFFF; }
         .status-badge-gray { background-color: #1E293B; border: 1px solid #334155; color: #94A3B8; font-size: 0.7rem; padding: 4px 12px; border-radius: 12px; font-weight: 500; display: flex; align-items: center; gap: 6px; }
-        
-        /* Novo Bloco de Dica Profissional (Substitui os links azuis) */
-        .study-tip-box { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 12px 16px; margin-bottom: 20px; display: flex; align-items: center; gap: 12px; }
-        .tip-icon { background: rgba(96, 165, 250, 0.15); color: #60A5FA; width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; }
-        .tip-content { display: flex; flex-direction: column; gap: 4px; }
-        .tip-title { font-size: 0.75rem; font-weight: 700; color: #94A3B8; text-transform: uppercase; letter-spacing: 0.5px; }
-        .tip-text { font-size: 0.85rem; color: #F8FAFC; line-height: 1.3; }
-
+        .link-full { display: inline-flex; align-items: center; color: #60A5FA; text-decoration: none; font-weight: 500; font-size: 0.9rem; margin-bottom: 20px; }
         .divider { height: 1px; background-color: #1E293B; margin-bottom: 16px; }
         .link-refresh { display: flex; align-items: center; justify-content: space-between; color: #CBD5E1; text-decoration: none; font-weight: 500; font-size: 0.9rem; }
         .link-refresh a { color: inherit; text-decoration: none; cursor: pointer; }
@@ -89,24 +83,17 @@
                 <span class="prep-label" id="userNameLabel">Olá, Estudante</span>
                 <h1 class="prep-title" id="dashStatusTitle">Pronto para Começar</h1>
                 <div class="dash-indicators" id="dashIndicators">
-                    <span class="active"></span><span class="active"></span><span></span><span></span><span></span><span></span>
+                    <!-- Os 6 traços agora são gerados dinamicamente via JavaScript -->
+                    <span></span><span></span><span></span><span></span><span></span><span></span>
                 </div>
+                <a href="#historyBox" class="link-small" id="dashMetaLabel">Histórico de Exames</a>
             </div>
             <div class="prep-circle-container">
                 <div class="progress-ring"><span id="dashPercent">0%</span></div>
-                <div class="status-badge-gray" id="dashBadge"><i class="fas fa-circle" style="color:#64748B"></i> Pendente</div>
+                <div class="status-badge-gray" id="dashBadge"><i class="fas fa-circle" style="color:#10B981"></i> Ativo</div>
             </div>
         </div>
-        
-        <!-- NOVO: Cartão informativo profissional que substitui os links azuis -->
-        <div class="study-tip-box">
-            <div class="tip-icon"><i class="fas fa-book-reader"></i></div>
-            <div class="tip-content">
-                <span class="tip-title">Painel de Estudo</span>
-                <span class="tip-text" id="dynamicTip">A carregar informações do seu progresso...</span>
-            </div>
-        </div>
-
+        <a href="exames.html" class="link-full">Ver progresso completo <i class="fas fa-arrow-right"></i></a>
         <div class="divider"></div>
         <div class="link-refresh">
             <a href="#" onclick="location.reload(); return false;"><i class="fas fa-sync-alt"></i> Actualizar Dados</a>
@@ -116,7 +103,7 @@
 
     <div class="explore-section">
         
-        <!-- SECÇÃO DO HISTÓRICO DE EXAMES -->
+        <!-- SECÇÃO DO HISTÓRICO DE EXAMES (CARREGA DA BASE DE DADOS) -->
         <div class="history-section" id="historyBox">
             <div class="history-header">
                 <h3>O Meu Progresso</h3>
@@ -216,36 +203,30 @@
         if(!usuarioData) return;
         
         try {
-            // Vai buscar os últimos 3 exames feitos pelo aluno
+            // Agora vai buscar os últimos 6 exames para sincronizar com os 6 traços
             const { data, error } = await _supabase
                 .from('Historico_Exames')
                 .select('*')
                 .eq('user_id', usuarioData.id)
                 .order('created_at', { ascending: false })
-                .limit(3);
+                .limit(6);
 
             const container = document.getElementById('historicoContainer');
-            const dashBadge = document.getElementById('dashBadge');
-            const dashTitle = document.getElementById('dashStatusTitle');
-            const dynamicTip = document.getElementById('dynamicTip');
+            const indicatorsContainer = document.getElementById('dashIndicators');
             
             if (error || !data || data.length === 0) {
                 container.innerHTML = '<div class="history-empty">Ainda não realizou nenhum exame simulado. O seu histórico aparecerá aqui.</div>';
+                document.getElementById('dashPercent').innerText = '0%';
                 
-                // LÓGICA DINÂMICA: Utilizador Sem Exames (Pendente)
-                if(dashBadge) dashBadge.innerHTML = '<i class="fas fa-circle" style="color:#64748B"></i> Pendente';
-                if(dashTitle) dashTitle.innerText = 'Pronto para Começar';
-                if(dynamicTip) dynamicTip.innerText = 'Realize o seu primeiro exame simulado para ativar o seu histórico e estatísticas.';
+                // Reseta os 6 traços para cinzento se não houver exames
+                indicatorsContainer.innerHTML = '<span></span><span></span><span></span><span></span><span></span><span></span>';
                 return;
             }
 
-            // LÓGICA DINÂMICA: Utilizador Com Exames (Ativo)
-            if(dashBadge) dashBadge.innerHTML = '<i class="fas fa-circle" style="color:#10B981"></i> Ativo';
-            if(dashTitle) dashTitle.innerText = 'Em Preparação';
-            if(dynamicTip) dynamicTip.innerText = 'Ótimo trabalho! A consistência é a chave. Continue a realizar testes diários.';
-
             container.innerHTML = ''; // Limpa o "A carregar..."
-            let ultimaPercentagem = 0;
+            
+            let somaPercentagens = 0;
+            let numExames = data.length;
 
             data.forEach(exame => {
                 // Formatar Data
@@ -255,7 +236,8 @@
                 const isPesados = exame.modulo === 'pesados';
                 const passClass = exame.percentagem >= 72 ? 'score-pass' : 'score-fail'; // 72% é aprovação (18/25)
                 
-                if(!ultimaPercentagem) ultimaPercentagem = exame.percentagem;
+                // Soma a percentagem de cada exame
+                somaPercentagens += exame.percentagem;
 
                 container.innerHTML += `
                     <div class="history-item">
@@ -275,8 +257,28 @@
                 `;
             });
 
-            // Atualiza a percentagem gigante no topo do Dashboard com o resultado mais recente
-            document.getElementById('dashPercent').innerText = `${ultimaPercentagem}%`;
+            // 1. CÁLCULO DA PERCENTAGEM GERAL (MÉDIA PROFISSIONAL)
+            let mediaGeral = Math.round(somaPercentagens / numExames);
+            
+            // Garantia de segurança: a média nunca pode ultrapassar 100%
+            if (mediaGeral > 100) {
+                mediaGeral = 100;
+            }
+            
+            // Atualiza o círculo gigante no topo com a média calculada
+            document.getElementById('dashPercent').innerText = `${mediaGeral}%`;
+
+            // 2. ATUALIZAÇÃO DOS TRAÇOS CONSOANTE OS EXAMES (MÁXIMO 6)
+            indicatorsContainer.innerHTML = ''; // Limpa os traços estáticos
+            
+            for (let i = 0; i < 6; i++) {
+                // Se o índice for menor que o número de exames realizados, pinta de azul (active)
+                if (i < numExames) {
+                    indicatorsContainer.innerHTML += '<span class="active"></span>';
+                } else {
+                    indicatorsContainer.innerHTML += '<span></span>';
+                }
+            }
 
         } catch(e) {
             console.log("Erro ao puxar histórico:", e);
