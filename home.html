@@ -46,24 +46,6 @@
         .icon-box { width: 42px; height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; margin-bottom: 16px; }
         .card h3 { font-size: 0.95rem; font-weight: 600; color: #1E293B; margin-bottom: 8px; }
         .card p { font-size: 0.75rem; color: #64748B; line-height: 1.5; }
-        
-        /* Nova Área de Histórico */
-        .history-section { background: #FFFFFF; border-radius: 16px; padding: 20px; margin-bottom: 24px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid #E2E8F0; }
-        .history-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .history-header h3 { font-size: 1.1rem; color: #1E293B; font-weight: 700; }
-        .history-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #F1F5F9; }
-        .history-item:last-child { border-bottom: none; padding-bottom: 0; }
-        .history-info { display: flex; align-items: center; gap: 12px; }
-        .history-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.9rem; }
-        .hist-pesados { background: #2563EB; }
-        .hist-mecanica { background: #EA580C; }
-        .history-details h4 { font-size: 0.9rem; color: #1E293B; margin-bottom: 2px; }
-        .history-details p { font-size: 0.75rem; color: #64748B; }
-        .history-score { text-align: right; }
-        .history-score span { font-size: 1.1rem; font-weight: 800; }
-        .score-pass { color: #10B981; }
-        .score-fail { color: #EF4444; }
-        .history-empty { text-align: center; padding: 15px; color: #94A3B8; font-size: 0.85rem; font-style: italic; }
 
         .ic-helios { background: #EFF6FF; color: #3B82F6; } .ic-exames { background: #ECFDF5; color: #10B981; }
         .ic-testes { background: #FFFBEB; color: #F59E0B; } .ic-sinais { background: #FEF2F2; color: #EF4444; }
@@ -83,17 +65,18 @@
                 <span class="prep-label" id="userNameLabel">Olá, Estudante</span>
                 <h1 class="prep-title" id="dashStatusTitle">Pronto para Começar</h1>
                 <div class="dash-indicators" id="dashIndicators">
-                    <!-- Os 6 traços agora são gerados dinamicamente via JavaScript -->
+                    <!-- Os 6 traços gerados dinamicamente via JavaScript -->
                     <span></span><span></span><span></span><span></span><span></span><span></span>
                 </div>
-                <a href="#historyBox" class="link-small" id="dashMetaLabel">Histórico de Exames</a>
+                <a href="progresso-completo.html" class="link-small" id="dashMetaLabel">Histórico de Exames</a>
             </div>
             <div class="prep-circle-container">
                 <div class="progress-ring"><span id="dashPercent">0%</span></div>
                 <div class="status-badge-gray" id="dashBadge"><i class="fas fa-circle" style="color:#10B981"></i> Ativo</div>
             </div>
         </div>
-        <a href="exames.html" class="link-full">Ver progresso completo <i class="fas fa-arrow-right"></i></a>
+        <!-- Link atualizado -->
+        <a href="progresso-completo.html" class="link-full">Ver progresso completo <i class="fas fa-arrow-right"></i></a>
         <div class="divider"></div>
         <div class="link-refresh">
             <a href="#" onclick="location.reload(); return false;"><i class="fas fa-sync-alt"></i> Actualizar Dados</a>
@@ -102,18 +85,6 @@
     </div>
 
     <div class="explore-section">
-        
-        <!-- SECÇÃO DO HISTÓRICO DE EXAMES (CARREGA DA BASE DE DADOS) -->
-        <div class="history-section" id="historyBox">
-            <div class="history-header">
-                <h3>O Meu Progresso</h3>
-                <i class="fas fa-chart-line" style="color:#94A3B8;"></i>
-            </div>
-            <div id="historicoContainer">
-                <div class="history-empty"><i class="fas fa-spinner fa-spin"></i> A carregar exames...</div>
-            </div>
-        </div>
-
         <div class="grid-container">
             <a href="tutor-ia.html" class="card">
                 <div class="icon-box ic-helios"><i class="far fa-comment-dots"></i></div>
@@ -191,88 +162,50 @@
             const primeiroNome = usuarioData.nome.split(' ')[0];
             document.getElementById('userNameLabel').innerText = 'Olá, ' + primeiroNome;
             
-            // Inicia o carregamento do histórico
-            carregarHistorico();
+            // Inicia o carregamento invisível da percentagem
+            calcularEstatisticaGeral();
             
         } catch (e) {
             window.location.href = 'index.html';
         }
     });
 
-    async function carregarHistorico() {
+    // Função focada apenas em fazer a matemática para manter a UI de topo a funcionar
+    async function calcularEstatisticaGeral() {
         if(!usuarioData) return;
         
         try {
-            // Agora vai buscar os últimos 6 exames para sincronizar com os 6 traços
             const { data, error } = await _supabase
                 .from('Historico_Exames')
-                .select('*')
+                .select('percentagem')
                 .eq('user_id', usuarioData.id)
                 .order('created_at', { ascending: false })
                 .limit(6);
 
-            const container = document.getElementById('historicoContainer');
             const indicatorsContainer = document.getElementById('dashIndicators');
             
             if (error || !data || data.length === 0) {
-                container.innerHTML = '<div class="history-empty">Ainda não realizou nenhum exame simulado. O seu histórico aparecerá aqui.</div>';
                 document.getElementById('dashPercent').innerText = '0%';
-                
-                // Reseta os 6 traços para cinzento se não houver exames
                 indicatorsContainer.innerHTML = '<span></span><span></span><span></span><span></span><span></span><span></span>';
                 return;
             }
 
-            container.innerHTML = ''; // Limpa o "A carregar..."
-            
             let somaPercentagens = 0;
             let numExames = data.length;
 
             data.forEach(exame => {
-                // Formatar Data
-                const dateObj = new Date(exame.created_at);
-                const dataFormatada = `${dateObj.getDate()}/${dateObj.getMonth()+1}/${dateObj.getFullYear()}`;
-                
-                const isPesados = exame.modulo === 'pesados';
-                const passClass = exame.percentagem >= 72 ? 'score-pass' : 'score-fail'; // 72% é aprovação (18/25)
-                
-                // Soma a percentagem de cada exame
                 somaPercentagens += exame.percentagem;
-
-                container.innerHTML += `
-                    <div class="history-item">
-                        <div class="history-info">
-                            <div class="history-icon ${isPesados ? 'hist-pesados' : 'hist-mecanica'}">
-                                <i class="fas ${isPesados ? 'fa-truck' : 'fa-cogs'}"></i>
-                            </div>
-                            <div class="history-details">
-                                <h4>Exame de ${isPesados ? 'Pesados' : 'Mecânica'}</h4>
-                                <p>${dataFormatada} • ${exame.acertos} certos, ${exame.erros} errados</p>
-                            </div>
-                        </div>
-                        <div class="history-score">
-                            <span class="${passClass}">${exame.percentagem}%</span>
-                        </div>
-                    </div>
-                `;
             });
 
-            // 1. CÁLCULO DA PERCENTAGEM GERAL (MÉDIA PROFISSIONAL)
+            // 1. CÁLCULO DA PERCENTAGEM GERAL
             let mediaGeral = Math.round(somaPercentagens / numExames);
+            if (mediaGeral > 100) mediaGeral = 100;
             
-            // Garantia de segurança: a média nunca pode ultrapassar 100%
-            if (mediaGeral > 100) {
-                mediaGeral = 100;
-            }
-            
-            // Atualiza o círculo gigante no topo com a média calculada
             document.getElementById('dashPercent').innerText = `${mediaGeral}%`;
 
-            // 2. ATUALIZAÇÃO DOS TRAÇOS CONSOANTE OS EXAMES (MÁXIMO 6)
-            indicatorsContainer.innerHTML = ''; // Limpa os traços estáticos
-            
+            // 2. ATUALIZAÇÃO DOS TRAÇOS
+            indicatorsContainer.innerHTML = '';
             for (let i = 0; i < 6; i++) {
-                // Se o índice for menor que o número de exames realizados, pinta de azul (active)
                 if (i < numExames) {
                     indicatorsContainer.innerHTML += '<span class="active"></span>';
                 } else {
@@ -282,7 +215,6 @@
 
         } catch(e) {
             console.log("Erro ao puxar histórico:", e);
-            document.getElementById('historicoContainer').innerHTML = '<div class="history-empty">Erro de conexão ao carregar o histórico.</div>';
         }
     }
 
