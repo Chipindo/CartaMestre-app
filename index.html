@@ -14,13 +14,12 @@
         
         .card { background: #ffffff; padding: 35px 25px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); width: 100%; max-width: 400px; }
         .logo-container { text-align: center; margin-bottom: 25px; }
-        .logo-icon { width: 50px; height: 50px; background: var(--primary); color: white; border-radius: 12px; display: inline-flex; justify-content: center; align-items: center; font-size: 24px; font-weight: bold; margin-bottom: 10px; }
+        
+        /* Nova classe para a logo em imagem */
+        .logo-img { width: 80px; height: 80px; object-fit: contain; margin-bottom: 10px; }
+        
         h2 { color: var(--text-main); font-size: 22px; margin-bottom: 4px; }
         p.subtitle { color: var(--text-muted); font-size: 14px; }
-        
-        .tabs { display: flex; margin-bottom: 25px; border-bottom: 2px solid var(--border); }
-        .tab { flex: 1; text-align: center; padding: 12px 5px; cursor: pointer; font-weight: 600; color: var(--text-muted); font-size: 14px; border-bottom: 2px solid transparent; transition: 0.3s; margin-bottom: -2px; }
-        .tab.active { color: var(--primary); border-bottom-color: var(--primary); }
         
         .form-container { display: none; animation: fadeIn 0.4s ease; }
         .form-container.active { display: block; }
@@ -37,6 +36,12 @@
         button:disabled { opacity: 0.7; cursor: not-allowed; }
         .btn-secondary { background: var(--text-muted); }
         .btn-secondary:hover { background: #475569; }
+        
+        /* Estilos dos links modernos na parte inferior */
+        .modern-links { display: flex; flex-direction: column; align-items: center; gap: 12px; margin-top: 25px; font-size: 14px; }
+        .modern-links a { color: var(--primary); text-decoration: none; font-weight: 600; transition: 0.2s; }
+        .modern-links a:hover { color: var(--primary-hover); text-decoration: underline; }
+        .modern-links span { color: var(--text-muted); }
         
         .result-box { background: #f0fdf4; border: 1px solid #bbf7d0; padding: 15px; border-radius: 8px; margin-bottom: 15px; }
         
@@ -55,15 +60,10 @@
 
     <div class="card">
         <div class="logo-container">
-            <div class="logo-icon">🛡️</div>
+            <!-- Ícone trocado pela imagem da logo -->
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjHt7VWZ9s7HgNon88uTal4lkKbISxdTi5r4NqHeRdMlmEkpqjFEK_9JJGPILPXoWnHbMJMK3pIQEXn1BstLae10Fq2H2YWqt-D6qgmjpzGRMCo_kNeoe_eNtrMJudNRLN69FP6UwAPrAA3hCoOQ0KwDXiOXa_vwY5Gk7V5bxHLZk38d361eBi8R9mdSw/s1254/1000240751.png" alt="Carta Mestre Logo" class="logo-img">
             <h2>Carta Mestre</h2>
             <p class="subtitle">A sua carta à primeira tentativa.</p>
-        </div>
-
-        <div class="tabs">
-            <div class="tab active" onclick="switchTab('login')">Entrar</div>
-            <div class="tab" onclick="switchTab('register')">Criar Conta</div>
-            <div class="tab" onclick="switchTab('recover')">Recuperar</div>
         </div>
 
         <div id="login-form" class="form-container active">
@@ -76,6 +76,12 @@
                 <input type="password" id="login-senha" placeholder="A sua senha secreta">
             </div>
             <button id="btn-login" onclick="fazerLogin()">Entrar na Conta</button>
+            
+            <!-- Botões modernos abaixo -->
+            <div class="modern-links">
+                <span>Esqueceu a senha? <a href="javascript:void(0)" onclick="switchTab('recover')">Recuperar senha</a></span>
+                <span>Não tem conta? <a href="javascript:void(0)" onclick="switchTab('register')">Criar conta</a></span>
+            </div>
         </div>
 
         <div id="register-form" class="form-container">
@@ -84,6 +90,11 @@
             <div class="input-group"><label>E-mail</label><input type="email" id="reg-email" placeholder="exemplo@email.com"></div>
             <div class="input-group"><label>Senha</label><input type="password" id="reg-senha" placeholder="Crie uma senha segura"></div>
             <button id="btn-reg" onclick="criarConta()">Criar Minha Conta</button>
+            
+            <!-- Botão moderno abaixo -->
+            <div class="modern-links">
+                <span>Já tem conta? <a href="javascript:void(0)" onclick="switchTab('login')">Entrar</a></span>
+            </div>
         </div>
 
         <div id="recover-form" class="form-container">
@@ -93,6 +104,11 @@
                 <div class="input-group"><label>Número</label><input type="tel" id="rec-numero" placeholder="O telefone registado"></div>
                 <div class="input-group"><label>E-mail</label><input type="email" id="rec-email" placeholder="O e-mail registado"></div>
                 <button id="btn-rec" onclick="verificarRecuperacao()">Validar Identidade</button>
+                
+                <!-- Botão moderno abaixo -->
+                <div class="modern-links">
+                    <span>Lembrou da senha? <a href="javascript:void(0)" onclick="switchTab('login')">Voltar para Entrar</a></span>
+                </div>
             </div>
 
             <div id="recover-step-2" style="display: none;">
@@ -111,23 +127,17 @@
     </div>
 
     <script>
+        // Lógica de alteração de formulário atualizada para o novo design (sem quebrar)
         function switchTab(tabName) {
-            var tabs = document.querySelectorAll('.tab');
             var forms = document.querySelectorAll('.form-container');
             
-            for(var i = 0; i < tabs.length; i++) {
-                tabs[i].classList.remove('active');
-            }
             for(var j = 0; j < forms.length; j++) {
                 forms[j].classList.remove('active');
             }
             
             document.getElementById(tabName + '-form').classList.add('active');
             
-            if (tabName === 'login') tabs[0].classList.add('active');
-            if (tabName === 'register') tabs[1].classList.add('active');
             if (tabName === 'recover') {
-                tabs[2].classList.add('active');
                 document.getElementById('recover-step-1').style.display = 'block';
                 document.getElementById('recover-step-2').style.display = 'none';
             }
