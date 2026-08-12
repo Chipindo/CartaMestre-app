@@ -20,10 +20,8 @@
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
         
-        /* ALTERADO: Removemos o padding e metemos height a 100% da tela */
         body { background-color: var(--bg); display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
 
-        /* ALTERADO: O chat agora ocupa 100% da largura e altura (Fullscreen) */
         .chat-container {
             background: var(--chat-bg);
             width: 100vw;
@@ -50,11 +48,12 @@
             flex-direction: column;
             gap: 15px;
             background-color: #fafafa;
+            scroll-behavior: smooth;
         }
 
         .msg {
-            max-width: 80%;
-            padding: 12px 16px;
+            max-width: 85%;
+            padding: 14px 18px;
             border-radius: 12px;
             font-size: 15px;
             line-height: 1.5;
@@ -77,25 +76,53 @@
             border: 1px solid var(--border);
         }
 
-        /* NOVO: Estilo dos "Vistos" tipo WhatsApp */
+        /* ----- ESTILOS PARA O TEU CÓDIGO HTML DOS SINAIS ----- */
+        .msg.ia .box {
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+            text-align: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .msg.ia figure {
+            margin: 0;
+            padding: 0;
+        }
+        .msg.ia figcaption {
+            font-size: 14px;
+            color: #475569;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px dashed #cbd5e1; /* Linha de separação entre a imagem e a legenda */
+        }
+        .msg.ia img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            display: block;
+            margin: 0 auto;
+        }
+        /* --------------------------------------------------- */
+
         .tick {
             font-size: 13px;
             margin-left: 8px;
-            color: #cbd5e1; /* Cor cinza (Enviado) */
+            color: #cbd5e1;
             display: inline-block;
         }
         .tick.read {
-            color: #60a5fa; /* Cor azul claro (Lido) */
+            color: #60a5fa;
             font-weight: bold;
         }
 
-        /* NOVO: Estilo do Indicador de digitação */
         #typing-indicator {
             padding: 5px 20px 10px;
             font-size: 13px;
             color: var(--primary);
             font-style: italic;
-            display: none; /* Escondido por padrão */
+            display: none;
             background-color: #fafafa;
         }
 
@@ -105,9 +132,10 @@
             background: white;
             border-top: 1px solid var(--border);
             gap: 10px;
+            align-items: flex-end;
         }
 
-        .chat-input-area input {
+        .chat-input-area textarea {
             flex: 1;
             padding: 12px 15px;
             border: 1.5px solid var(--border);
@@ -115,12 +143,18 @@
             font-size: 15px;
             outline: none;
             transition: border 0.2s;
+            resize: none;
+            min-height: 48px;
+            max-height: 120px;
+            font-family: inherit;
+            overflow-y: auto;
         }
 
-        .chat-input-area input:focus { border-color: var(--primary); }
+        .chat-input-area textarea:focus { border-color: var(--primary); }
 
         .chat-input-area button {
             padding: 12px 20px;
+            height: 48px;
             background: var(--primary);
             color: white;
             border: none;
@@ -134,7 +168,6 @@
         .chat-input-area button:hover { background: var(--primary-hover); }
         .chat-input-area button:disabled { background: #94a3b8; cursor: not-allowed; }
 
-        /* Loader simples para estado do sistema */
         #status-bar {
             text-align: center;
             font-size: 12px;
@@ -151,21 +184,17 @@
         <div class="chat-header">Instrutor IA - Carta Mestre</div>
         <div id="status-bar">A conectar ao servidor...</div>
         
-        <div class="chat-box" id="chat-box">
-            <!-- As mensagens vão aparecer aqui -->
-        </div>
+        <div class="chat-box" id="chat-box"></div>
 
-        <!-- NOVO: Indicador de escrita -->
         <div id="typing-indicator">A IA está a escrever...</div>
 
         <div class="chat-input-area">
-            <input type="text" id="user-input" placeholder="Faz uma pergunta sobre o código da estrada..." disabled>
+            <textarea id="user-input" placeholder="Faz uma pergunta sobre o código ou sinais..." disabled rows="1"></textarea>
             <button id="btn-send" onclick="enviarMensagem()" disabled>Enviar</button>
         </div>
     </div>
 
     <script>
-        // 1. Configuração do Supabase
         const SUPABASE_URL = 'https://vhcioxwuombrqkhkipdh.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_XW2XlyZRe0IOotl6fpRXGQ_w6_-32AF';
         const supabaseUrl = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -176,7 +205,13 @@
         let regrasSistema = "";
         let historicoMensagens = [];
 
-        // 2. Carregar Configurações do Supabase ao abrir o chat
+        const inputField = document.getElementById('user-input');
+        inputField.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+            if(this.value.trim() === '') this.style.height = '48px'; 
+        });
+
         async function inicializarIA() {
             try {
                 const { data, error } = await supabaseUrl.from('ConfiguracoesIA').select('*').eq('id', 1).single();
@@ -186,15 +221,16 @@
                 if (data) {
                     chavesAtivas = (data.chaves_api || '').split(/[\n,]+/).map(c => c.trim()).filter(c => c !== "");
                     versaoModelo = data.versao_modelo || "gemini-1.5-flash";
-                    regrasSistema = `${data.regras || ''}\n\nBase de Conhecimento (Código da Estrada):\n${data.codigo_estrada || ''}`;
+                    
+                    regrasSistema = `${data.regras || ''}\n\n⚠️ INSTRUÇÃO OBRIGATÓRIA: Sempre que mencionares, explicares ou listares um sinal de trânsito, deves OBRIGATORIAMENTE exibir a imagem desse sinal e usar todo o bloco HTML original correspondente que está na tua base de dados. Nunca omitas a estrutura HTML ao referir um sinal.\n\nBase de Conhecimento (Código da Estrada):\n${data.codigo_estrada || ''}\n\nBase de Conhecimento (Sinais de Trânsito HTML/Imagens):\n${data.sinais_transito || ''}`;
                     
                     document.getElementById('status-bar').innerText = "Sistema Online - Pronto a ajudar!";
                     document.getElementById('status-bar').style.color = "#10b981";
                     
-                    document.getElementById('user-input').disabled = false;
+                    inputField.disabled = false;
                     document.getElementById('btn-send').disabled = false;
                     
-                    adicionarMensagem('ia', "Olá! Sou o teu instrutor virtual. Como te posso ajudar hoje com o código da estrada?");
+                    adicionarMensagem('ia', "Olá! Sou o teu instrutor virtual. Podes perguntar-me sobre o código da estrada ou pedir para te mostrar sinais de trânsito.");
                 }
             } catch (error) {
                 console.error("Erro ao ligar ao Supabase:", error);
@@ -204,27 +240,19 @@
             }
         }
 
-        // 3. Adicionar mensagem visual no HTML
         function adicionarMensagem(tipo, texto) {
             const box = document.getElementById('chat-box');
             const div = document.createElement('div');
             div.className = 'msg ' + tipo;
             
-            // Sanitiza o texto, converte formatos do Markdown, substitui asteriscos de lista e adiciona quebras
-            let textoSeguro = texto
-                .replace(/</g, "&lt;") // Segurança HTML
-                .replace(/>/g, "&gt;") // Segurança HTML
-                .replace(/(^|\n)#{1,6}\s+(.*)/g, '$1<strong>$2</strong>') // AJUSTE AQUI: Remove #### de títulos e coloca em negrito
-                .replace(/(^|\n)---+(\n|$)/g, '$1<hr style="border:0; border-top:1px solid #cbd5e1; margin:10px 0;">$2') // AJUSTE AQUI: Converte "---" para uma linha divisória elegante
-                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // Converte **texto** para negrito
-                .replace(/(^|\n)\s*\*\s+/g, '$1• ') // AJUSTE AQUI: Apanha o "*" do início da frase (mesmo com espaços) e transforma em "•"
-                .replace(/\n/g, '<br>'); // Quebra de linha HTML
-            
-            // Adicionar os checks estilo WhatsApp para as mensagens do utilizador
+            let textoSeguro = texto;
+
             if (tipo === 'user') {
+                // Bloqueia qualquer HTML no que o utilizador escreve (Proteção máxima)
+                textoSeguro = textoSeguro.replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\n/g, '<br>');
+                
                 const tickId = 'tick-' + Date.now(); 
                 textoSeguro += `<span class="tick" id="${tickId}">✓</span>`; 
-                
                 setTimeout(() => {
                     const tickElement = document.getElementById(tickId);
                     if (tickElement) {
@@ -232,17 +260,38 @@
                         tickElement.classList.add('read');
                     }
                 }, 800); 
+            } else {
+                // A IA TEM PERMISSÃO PARA MOSTRAR O TEU CÓDIGO HTML DOS SINAIS
+                
+                // Converte imagens Markdown caso a IA decida inventar formatos
+                textoSeguro = textoSeguro.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1">');
+                
+                // Remove espaços em branco indesejados entre as tuas tags HTML para não estragar as Caixas
+                textoSeguro = textoSeguro.replace(/>\s+</g, '><');
+
+                // Converte o resto do Markdown em HTML
+                textoSeguro = textoSeguro
+                    .replace(/(^|\n)#{1,6}\s+(.*)/g, '$1<strong>$2</strong>') 
+                    .replace(/(^|\n)---+(\n|$)/g, '$1<hr style="border:0; border-top:1px solid #cbd5e1; margin:10px 0;">$2')
+                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') 
+                    .replace(/(^|\n)\s*\*\s+/g, '$1• ') 
+                    .replace(/\n/g, '<br>'); // Aplica quebras de linha normais no texto
             }
 
             div.innerHTML = textoSeguro;
             box.appendChild(div);
-            box.scrollTop = box.scrollHeight;
+
+            if (tipo === 'user') {
+                box.scrollTop = box.scrollHeight;
+            } else {
+                setTimeout(() => {
+                    div.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 100);
+            }
         }
 
-        // 4. Enviar mensagem do utilizador
         async function enviarMensagem() {
-            const input = document.getElementById('user-input');
-            const textoUser = input.value.trim();
+            const textoUser = inputField.value.trim();
             if (!textoUser) return;
             
             if (chavesAtivas.length === 0) {
@@ -250,15 +299,16 @@
                 return;
             }
 
-            input.blur(); // AJUSTE AQUI: Remove o foco do input para esconder o teclado no telemóvel ao enviar a mensagem.
-
+            inputField.blur(); 
             adicionarMensagem('user', textoUser);
-            input.value = '';
+            
+            inputField.value = '';
+            inputField.style.height = '48px'; 
             
             historicoMensagens.push({ role: "user", parts: [{ text: textoUser }] });
             
             document.getElementById('btn-send').disabled = true;
-            document.getElementById('user-input').disabled = true;
+            inputField.disabled = true;
             document.getElementById('btn-send').innerText = '...';
 
             document.getElementById('typing-indicator').style.display = 'block';
@@ -267,7 +317,6 @@
             await pedirRespostaGemini();
         }
 
-        // 5. Chamar o Gemini usando a versão configurada e rotação de chaves
         async function pedirRespostaGemini() {
             let chaveApi = chavesAtivas[chaveAtualIndex];
             const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${versaoModelo}:generateContent?key=${chaveApi}`;
@@ -307,7 +356,6 @@
                     await pedirRespostaGemini();
                 } else {
                     document.getElementById('typing-indicator').style.display = 'none';
-
                     adicionarMensagem('ia', "Desculpa, os nossos servidores estão sobrecarregados neste momento. Tenta novamente mais tarde.");
                     historicoMensagens.pop();
                     chaveAtualIndex = 0;
@@ -316,23 +364,12 @@
             }
         }
 
-        // 6. Voltar a ativar os controlos
         function resetBotao() {
             document.getElementById('btn-send').disabled = false;
-            document.getElementById('user-input').disabled = false;
+            inputField.disabled = false;
             document.getElementById('btn-send').innerText = 'Enviar';
-            // AJUSTE AQUI: Removido o .focus() para que o teclado não abra automaticamente após a IA responder.
         }
 
-        // 7. Permitir envio com a tecla "Enter"
-        document.getElementById("user-input").addEventListener("keypress", function(event) {
-            if (event.key === "Enter") {
-                event.preventDefault();
-                enviarMensagem();
-            }
-        });
-
-        // Iniciar
         window.onload = inicializarIA;
     </script>
 </body>
