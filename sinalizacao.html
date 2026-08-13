@@ -1129,5 +1129,47 @@ figcaption b {
 
 </section>
 
+<!-- Carrega o Supabase e o Cão de Guarda de uma só vez -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+    async function caoDeGuarda() {
+        const userDataJson = localStorage.getItem('usuarioLogado');
+        if (!userDataJson) {
+            window.location.href = 'index.html';
+            return;
+        }
+
+        try {
+            // Inicializa o Supabase nesta página específica
+            const SUPABASE_URL = 'https://vhcioxwuombrqkhkipdh.supabase.co';
+            const SUPABASE_KEY = 'sb_publishable_XW2XlyZRe0IOotl6fpRXGQ_w6_-32AF';
+            const sClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+            const user = JSON.parse(userDataJson);
+            
+            // Verifica o estado atual na base de dados
+            const { data } = await sClient
+                .from('Utilizadores')
+                .select('mensagem_admin, banido')
+                .eq('id', user.id)
+                .single();
+
+            if (data) {
+                const isBanido = data.banido === true || (data.mensagem_admin && data.mensagem_admin.includes('[BANIDO]'));
+                if (isBanido) {
+                    localStorage.removeItem('usuarioLogado');
+                    window.location.replace('index.html'); 
+                }
+            }
+        } catch (e) {
+            console.log("Modo offline ativo ou sem internet.");
+        }
+    }
+
+    // Executa ao abrir e repete a cada 30 segundos
+    caoDeGuarda();
+    setInterval(caoDeGuarda, 30000);
+</script>
+
 </body>
 </html>
