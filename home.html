@@ -43,9 +43,28 @@
         .grid-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
         .card { background-color: #FFFFFF; border-radius: 12px; padding: 20px 16px; display: flex; flex-direction: column; align-items: flex-start; text-align: left; text-decoration: none; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); border: 1px solid #E2E8F0; transition: all 0.2s ease-in-out; cursor: pointer; }
         .card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
-        .icon-box { width: 42px; height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; margin-bottom: 16px; }
+        .icon-box { position: relative; width: 42px; height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; margin-bottom: 16px; }
         .card h3 { font-size: 0.95rem; font-weight: 600; color: #1E293B; margin-bottom: 8px; }
         .card p { font-size: 0.75rem; color: #64748B; line-height: 1.5; }
+
+        /* Estilo da bolinha de notificação de mensagens (Badge) */
+        .msg-badge {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            background-color: #10B981; /* Verde WhatsApp */
+            color: white;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 5px;
+            border-radius: 12px;
+            border: 2px solid #FFFFFF;
+            min-width: 20px;
+            text-align: center;
+            display: none; /* Escondido por defeito, o JS mostra se houver mensagens */
+            box-shadow: 0 2px 4px rgba(16, 185, 129, 0.3);
+            z-index: 2;
+        }
 
         .ic-helios { background: #EFF6FF; color: #3B82F6; } .ic-exames { background: #ECFDF5; color: #10B981; }
         .ic-testes { background: #FFFBEB; color: #F59E0B; } .ic-sinais { background: #FEF2F2; color: #EF4444; }
@@ -65,7 +84,6 @@
                 <span class="prep-label" id="userNameLabel">Olá, Estudante</span>
                 <h1 class="prep-title" id="dashStatusTitle">Pronto para Começar</h1>
                 <div class="dash-indicators" id="dashIndicators">
-                    <!-- Os 6 traços gerados dinamicamente via JavaScript -->
                     <span></span><span></span><span></span><span></span><span></span><span></span>
                 </div>
                 <a href="progresso-completo.html" class="link-small" id="dashMetaLabel">Histórico de Exames</a>
@@ -94,10 +112,17 @@
                 <div class="icon-box ic-exames"><i class="far fa-file-alt"></i></div>
                 <h3>Exames</h3><p>Simulações reais da Carta Mestre.</p>
             </a>
-            <a href="sala-de-aula.html" class="card">
-                <div class="icon-box ic-testes"><i class="fas fa-chalkboard-teacher"></i></div>
-                <h3>Sala de Aula</h3><p>Testes 98.7% alinhados com a base de dados oficial.</p>
+            
+            <!-- NOVO CARTÃO DE CHAT ENTRE ALUNOS -->
+            <a href="chat.html" class="card" onclick="marcarChatComoLido()">
+                <div class="icon-box ic-testes">
+                    <i class="fas fa-comments"></i>
+                    <div class="msg-badge" id="chat-badge"></div>
+                </div>
+                <h3>Chat entre alunos</h3>
+                <p>Espaço para tirar dúvidas e interagir com a turma.</p>
             </a>
+            
             <a href="sinalizacao.html" class="card">
                 <div class="icon-box ic-sinais"><i class="fas fa-exclamation-triangle"></i></div>
                 <h3>Sinalização</h3><p>Catálogo completo de sinais de trânsito.</p>
@@ -132,7 +157,6 @@
     <footer>
         <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 16px; padding: 20px; margin: 10px 20px 24px 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.03);">
             <div style="font-size: 0.8rem; font-weight: 700; color: #1E293B; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 0.5px;">Métodos de Pagamento</div>
-            <!-- Aqui estão as novas imagens de pagamento inseridas corretamente -->
             <p style="display: flex; justify-content: center; align-items: center; gap: 15px; margin-bottom: 16px;">
                 <img class="wp-image-97" style="width: 70px; object-fit: contain;" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiUwJdM5IPL17Uvll1HorD-UgFz0DJjKQYvBadh_RALLJS8z1LaJ0oYN7UKXC8_OwGeADco2dL0g-6ct0YFKGTaZfG1u288p-a-tRXAceTjUJuypIN6bysamv4itVQFGjjy_coj929WA_4NCm3zG9MpuJ4dlYq9S_2U3jZMDr5GtRbFSxyoyX3PUtihdw/s1600/1000240834.png" alt="e-Mola">
                 <img class="wp-image-98" style="width: 70px; object-fit: contain;" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjMAKNJD48yLPhEYQnGJ46TyR-z76UkYd0Mga0JQdxnars32hYmV48-9zfLnu5SFw-N6QLLZouakhRXB5b8m5-e8-H7TwMyUhyphenhyphenuIu-QAmdeHKE1PNIFY-2q7JkQU4BJ6dPez_wKTEX5nZkSAWCRNtk444DfiB7YomkaLLfa7FzejiRNojO8-f3jjN29LA/s1600/1000240833.png" alt="M-Pesa">
@@ -163,15 +187,56 @@
             const primeiroNome = usuarioData.nome.split(' ')[0];
             document.getElementById('userNameLabel').innerText = 'Olá, ' + primeiroNome;
             
-            // Inicia o carregamento invisível da percentagem
+            // Funções de inicialização
             calcularEstatisticaGeral();
+            verificarNovasMensagensChat(); // Nova função para o Badge
             
         } catch (e) {
             window.location.href = 'index.html';
         }
     });
 
-    // Função focada apenas em fazer a matemática para manter a UI de topo a funcionar
+    // --- NOVA FUNÇÃO PARA CONTAR MENSAGENS NÃO LIDAS ---
+    async function verificarNovasMensagensChat() {
+        if(!usuarioData) return;
+        
+        try {
+            // Verifica no telemóvel do utilizador a última vez que ele clicou no chat
+            let ultimoAcesso = localStorage.getItem('ultimoAcessoChat');
+            
+            // Se for a primeira vez, considera mensagens dos últimos 3 dias
+            if (!ultimoAcesso) {
+                let dataAntiga = new Date();
+                dataAntiga.setDate(dataAntiga.getDate() - 3);
+                ultimoAcesso = dataAntiga.toISOString();
+            }
+
+            // Conta as mensagens na base de dados DEPOIS desse último acesso (e que não sejam dele)
+            const { count, error } = await _supabase
+                .from('Mensagens')
+                .select('*', { count: 'exact', head: true })
+                .gt('criado_em', ultimoAcesso)
+                .neq('usuario_id', usuarioData.id);
+
+            if (error) throw error;
+
+            if (count > 0) {
+                const badge = document.getElementById('chat-badge');
+                // Se for superior a 99, exibe 99+ (Estilo WhatsApp)
+                badge.innerText = count > 99 ? '99+' : count;
+                badge.style.display = 'block';
+            }
+        } catch(e) {
+            console.log("Erro ao contar novas mensagens:", e);
+        }
+    }
+
+    // Grava a hora atual sempre que o aluno clica no botão do chat
+    function marcarChatComoLido() {
+        localStorage.setItem('ultimoAcessoChat', new Date().toISOString());
+    }
+    // --------------------------------------------------
+
     async function calcularEstatisticaGeral() {
         if(!usuarioData) return;
         
@@ -198,13 +263,11 @@
                 somaPercentagens += exame.percentagem;
             });
 
-            // 1. CÁLCULO DA PERCENTAGEM GERAL
             let mediaGeral = Math.round(somaPercentagens / numExames);
             if (mediaGeral > 100) mediaGeral = 100;
             
             document.getElementById('dashPercent').innerText = `${mediaGeral}%`;
 
-            // 2. ATUALIZAÇÃO DOS TRAÇOS
             indicatorsContainer.innerHTML = '';
             for (let i = 0; i < 6; i++) {
                 if (i < numExames) {
