@@ -20,6 +20,12 @@
         }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background-color: #CBD5E1; color: #1E293B; display: flex; justify-content: center; min-height: 100dvh; margin: 0; overflow-x: hidden; }
+        
+        /* Ecrã de bloqueio invisível para evitar cliques antes da verificação */
+        #block-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #F8FAFC; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .spinner { border: 4px solid rgba(0,0,0,0.1); border-left-color: #2563EB; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin-bottom: 15px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
         .app-container { width: 100%; max-width: 600px; min-height: 100dvh; background-color: #F8FAFC; position: relative; display: flex; flex-direction: column; padding-bottom: 80px; box-shadow: 0 0 20px rgba(0,0,0,0.1); }
         .top-section { background-color: #0F172A; color: #FFFFFF; border-radius: 0 0 24px 24px; padding: 32px 24px 24px; box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.15); margin-bottom: 24px; }
         .prep-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; }
@@ -47,23 +53,11 @@
         .card h3 { font-size: 0.95rem; font-weight: 600; color: #1E293B; margin-bottom: 8px; }
         .card p { font-size: 0.75rem; color: #64748B; line-height: 1.5; }
 
-        /* Estilo da bolinha de notificação de mensagens (Badge) */
         .msg-badge {
-            position: absolute;
-            top: -6px;
-            right: -6px;
-            background-color: #10B981; /* Verde WhatsApp */
-            color: white;
-            font-size: 10px;
-            font-weight: 700;
-            padding: 2px 5px;
-            border-radius: 12px;
-            border: 2px solid #FFFFFF;
-            min-width: 20px;
-            text-align: center;
-            display: none; /* Escondido por defeito, o JS mostra se houver mensagens */
-            box-shadow: 0 2px 4px rgba(16, 185, 129, 0.3);
-            z-index: 2;
+            position: absolute; top: -6px; right: -6px; background-color: #10B981; color: white;
+            font-size: 10px; font-weight: 700; padding: 2px 5px; border-radius: 12px;
+            border: 2px solid #FFFFFF; min-width: 20px; text-align: center; display: none;
+            box-shadow: 0 2px 4px rgba(16, 185, 129, 0.3); z-index: 2;
         }
 
         .ic-helios { background: #EFF6FF; color: #3B82F6; } .ic-exames { background: #ECFDF5; color: #10B981; }
@@ -76,7 +70,13 @@
 </head>
 <body>
 
-<div class="app-container">
+<!-- Overlay de Carregamento/Verificação -->
+<div id="block-overlay">
+    <div class="spinner"></div>
+    <div style="color: #64748B; font-weight: 600; font-size: 0.9rem;">A verificar credenciais...</div>
+</div>
+
+<div class="app-container" style="display: none;" id="main-content">
     
     <div class="top-section">
         <div class="prep-header">
@@ -113,7 +113,6 @@
                 <h3>Exames</h3><p>Simulações reais da Carta Mestre.</p>
             </a>
             
-            <!-- NOVO CARTÃO DE CHAT ENTRE ALUNOS -->
             <a href="chat.html" class="card" onclick="marcarChatComoLido()">
                 <div class="icon-box ic-testes">
                     <i class="fas fa-comments"></i>
@@ -158,9 +157,9 @@
         <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 16px; padding: 20px; margin: 10px 20px 24px 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.03);">
             <div style="font-size: 0.8rem; font-weight: 700; color: #1E293B; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 0.5px;">Métodos de Pagamento</div>
             <p style="display: flex; justify-content: center; align-items: center; gap: 15px; margin-bottom: 16px;">
-                <img class="wp-image-97" style="width: 70px; object-fit: contain;" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiUwJdM5IPL17Uvll1HorD-UgFz0DJjKQYvBadh_RALLJS8z1LaJ0oYN7UKXC8_OwGeADco2dL0g-6ct0YFKGTaZfG1u288p-a-tRXAceTjUJuypIN6bysamv4itVQFGjjy_coj929WA_4NCm3zG9MpuJ4dlYq9S_2U3jZMDr5GtRbFSxyoyX3PUtihdw/s1600/1000240834.png" alt="e-Mola">
-                <img class="wp-image-98" style="width: 70px; object-fit: contain;" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjMAKNJD48yLPhEYQnGJ46TyR-z76UkYd0Mga0JQdxnars32hYmV48-9zfLnu5SFw-N6QLLZouakhRXB5b8m5-e8-H7TwMyUhyphenhyphenuIu-QAmdeHKE1PNIFY-2q7JkQU4BJ6dPez_wKTEX5nZkSAWCRNtk444DfiB7YomkaLLfa7FzejiRNojO8-f3jjN29LA/s1600/1000240833.png" alt="M-Pesa">
-                <img class="wp-image-99" style="width: 70px; object-fit: contain;" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjTLEaFtKQ_tRV_5t86HhDL-3-aKjAA-Phk3v0eQEQi49tlmGZNJH_Y2r5_RHugpbUepuieuOryzwp22t3li6MpircvEaOjASMJSnQTmNasqjOxaT9khDysqOg8_x8JRBPUE3grHOFupAiIdT4qaaaR-7dxMVR8i_kz7QRxwKhcsv4ncRHRTdUjmYCWSw/s1600/1000240835.png" alt="mKesh">
+                <img style="width: 70px; object-fit: contain;" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiUwJdM5IPL17Uvll1HorD-UgFz0DJjKQYvBadh_RALLJS8z1LaJ0oYN7UKXC8_OwGeADco2dL0g-6ct0YFKGTaZfG1u288p-a-tRXAceTjUJuypIN6bysamv4itVQFGjjy_coj929WA_4NCm3zG9MpuJ4dlYq9S_2U3jZMDr5GtRbFSxyoyX3PUtihdw/s1600/1000240834.png" alt="e-Mola">
+                <img style="width: 70px; object-fit: contain;" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjMAKNJD48yLPhEYQnGJ46TyR-z76UkYd0Mga0JQdxnars32hYmV48-9zfLnu5SFw-N6QLLZouakhRXB5b8m5-e8-H7TwMyUhyphenhyphenuIu-QAmdeHKE1PNIFY-2q7JkQU4BJ6dPez_wKTEX5nZkSAWCRNtk444DfiB7YomkaLLfa7FzejiRNojO8-f3jjN29LA/s1600/1000240833.png" alt="M-Pesa">
+                <img style="width: 70px; object-fit: contain;" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjTLEaFtKQ_tRV_5t86HhDL-3-aKjAA-Phk3v0eQEQi49tlmGZNJH_Y2r5_RHugpbUepuieuOryzwp22t3li6MpircvEaOjASMJSnQTmNasqjOxaT9khDysqOg8_x8JRBPUE3grHOFupAiIdT4qaaaR-7dxMVR8i_kz7QRxwKhcsv4ncRHRTdUjmYCWSw/s1600/1000240835.png" alt="mKesh">
             </p>
             <div style="display: inline-flex; align-items: center; gap: 8px; font-size: 0.8rem; font-weight: 600; color: #10B981; background: #ECFDF5; padding: 6px 12px; border-radius: 12px; border: 1px solid #A7F3D0;">
                 <i class="fas fa-shield-alt"></i> Pagamento Seguro & Confirmado
@@ -178,7 +177,7 @@
 
     let usuarioData = null;
 
-    document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener("DOMContentLoaded", async function() {
         const userDataJson = localStorage.getItem('usuarioLogado');
         if (!userDataJson) { window.location.href = 'index.html'; return; }
         
@@ -187,31 +186,76 @@
             const primeiroNome = usuarioData.nome.split(' ')[0];
             document.getElementById('userNameLabel').innerText = 'Olá, ' + primeiroNome;
             
-            // Funções de inicialização
-            calcularEstatisticaGeral();
-            verificarNovasMensagensChat(); // Nova função para o Badge
+            // 1. PRIMEIRO PASSO: Verificar se o utilizador está banido ANTES de mostrar a app
+            await verificarStatusConta();
             
         } catch (e) {
-            window.location.href = 'index.html';
+            console.error(e);
+            fazerLogout(); // Se os dados locais estiverem corrompidos, atira para fora
         }
     });
 
-    // --- NOVA FUNÇÃO PARA CONTAR MENSAGENS NÃO LIDAS ---
+    // --- NOVA FUNÇÃO DE SEGURANÇA MÁXIMA ---
+    async function verificarStatusConta() {
+        try {
+            // Vai à base de dados perguntar especificamente por este utilizador
+            const { data, error } = await _supabase
+                .from('Utilizadores')
+                .select('mensagem_admin, banido')
+                .eq('id', usuarioData.id)
+                .single();
+
+            if (error) throw error;
+
+            // Verifica se a tag [BANIDO] está na mensagem ou se a coluna banido é true
+            const isBanido = data.banido === true || (data.mensagem_admin && data.mensagem_admin.includes('[BANIDO]'));
+
+            if (isBanido) {
+                // Se estiver banido, impede o fecho do popup, não carrega a app e força o logout
+                await Swal.fire({
+                    icon: 'error',
+                    title: 'Acesso Bloqueado',
+                    html: `<b>A sua conta foi banida por violação dos termos.</b><br><br><span style="font-size:0.85rem; color:#64748B;">Motivo: ${data.mensagem_admin}</span>`,
+                    confirmButtonText: 'Sair do Sistema',
+                    confirmButtonColor: '#EF4444',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false
+                });
+                
+                fazerLogout();
+                return; // Pára a execução aqui
+            }
+
+            // SE NÃO ESTIVER BANIDO: 
+            // Esconde a tela de carregamento e mostra o painel da App
+            document.getElementById('block-overlay').style.display = 'none';
+            document.getElementById('main-content').style.display = 'flex';
+
+            // Carrega o resto das funções normalmente
+            calcularEstatisticaGeral();
+            verificarNovasMensagensChat();
+
+        } catch(e) {
+            console.log("Erro na ligação à base de dados. O utilizador pode estar offline.", e);
+            // Se falhar apenas porque está sem internet, deixa abrir a app usando os dados em cache
+            document.getElementById('block-overlay').style.display = 'none';
+            document.getElementById('main-content').style.display = 'flex';
+            calcularEstatisticaGeral();
+        }
+    }
+
     async function verificarNovasMensagensChat() {
         if(!usuarioData) return;
         
         try {
-            // Verifica no telemóvel do utilizador a última vez que ele clicou no chat
             let ultimoAcesso = localStorage.getItem('ultimoAcessoChat');
             
-            // Se for a primeira vez, considera mensagens dos últimos 3 dias
             if (!ultimoAcesso) {
                 let dataAntiga = new Date();
                 dataAntiga.setDate(dataAntiga.getDate() - 3);
                 ultimoAcesso = dataAntiga.toISOString();
             }
 
-            // Conta as mensagens na base de dados DEPOIS desse último acesso (e que não sejam dele)
             const { count, error } = await _supabase
                 .from('Mensagens')
                 .select('*', { count: 'exact', head: true })
@@ -222,7 +266,6 @@
 
             if (count > 0) {
                 const badge = document.getElementById('chat-badge');
-                // Se for superior a 99, exibe 99+ (Estilo WhatsApp)
                 badge.innerText = count > 99 ? '99+' : count;
                 badge.style.display = 'block';
             }
@@ -231,11 +274,9 @@
         }
     }
 
-    // Grava a hora atual sempre que o aluno clica no botão do chat
     function marcarChatComoLido() {
         localStorage.setItem('ultimoAcessoChat', new Date().toISOString());
     }
-    // --------------------------------------------------
 
     async function calcularEstatisticaGeral() {
         if(!usuarioData) return;
@@ -284,7 +325,7 @@
 
     function fazerLogout() {
         localStorage.removeItem('usuarioLogado');
-        window.location.href = 'index.html';
+        window.location.href = 'index.html'; // Volta para a página de login
     }
 </script>
 </body>
