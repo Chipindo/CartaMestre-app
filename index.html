@@ -5,8 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Carta Mestre - Acesso</title>
     
-    <!-- Supabase -->
+    <!-- Supabase e SweetAlert (Para o aviso de banimento) -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
     <style>
         :root { --primary: #2563eb; --primary-hover: #1d4ed8; --bg: #f8fafc; --text-main: #1e293b; --text-muted: #64748b; --border: #e2e8f0; --success: #10b981; --danger: #ef4444; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
@@ -60,7 +62,6 @@
 
     <div class="card">
         <div class="logo-container">
-            <!-- Ícone trocado pela imagem da logo -->
             <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjHt7VWZ9s7HgNon88uTal4lkKbISxdTi5r4NqHeRdMlmEkpqjFEK_9JJGPILPXoWnHbMJMK3pIQEXn1BstLae10Fq2H2YWqt-D6qgmjpzGRMCo_kNeoe_eNtrMJudNRLN69FP6UwAPrAA3hCoOQ0KwDXiOXa_vwY5Gk7V5bxHLZk38d361eBi8R9mdSw/s1254/1000240751.png" alt="Carta Mestre Logo" class="logo-img">
             <h2>Carta Mestre</h2>
             <p class="subtitle">A sua carta à primeira tentativa.</p>
@@ -77,7 +78,6 @@
             </div>
             <button id="btn-login" onclick="fazerLogin()">Entrar na Conta</button>
             
-            <!-- Botões modernos abaixo -->
             <div class="modern-links">
                 <span>Esqueceu a senha? <a href="javascript:void(0)" onclick="switchTab('recover')">Recuperar senha</a></span>
                 <span>Não tem conta? <a href="javascript:void(0)" onclick="switchTab('register')">Criar conta</a></span>
@@ -91,7 +91,6 @@
             <div class="input-group"><label>Senha</label><input type="password" id="reg-senha" placeholder="Crie uma senha segura"></div>
             <button id="btn-reg" onclick="criarConta()">Criar Minha Conta</button>
             
-            <!-- Botão moderno abaixo -->
             <div class="modern-links">
                 <span>Já tem conta? <a href="javascript:void(0)" onclick="switchTab('login')">Entrar</a></span>
             </div>
@@ -105,7 +104,6 @@
                 <div class="input-group"><label>E-mail</label><input type="email" id="rec-email" placeholder="O e-mail registado"></div>
                 <button id="btn-rec" onclick="verificarRecuperacao()">Validar Identidade</button>
                 
-                <!-- Botão moderno abaixo -->
                 <div class="modern-links">
                     <span>Lembrou da senha? <a href="javascript:void(0)" onclick="switchTab('login')">Voltar para Entrar</a></span>
                 </div>
@@ -127,7 +125,6 @@
     </div>
 
     <script>
-        // Lógica de alteração de formulário atualizada para o novo design (sem quebrar)
         function switchTab(tabName) {
             var forms = document.querySelectorAll('.form-container');
             
@@ -187,6 +184,7 @@
             }
         };
 
+        // --- SISTEMA DE LOGIN COM VERIFICAÇÃO DE BANIMENTO ---
         async function fazerLogin() {
             if(!_supabase) return showNotification("Verifique a sua ligação à internet.", "error");
 
@@ -203,7 +201,24 @@
             if (error || !data || data.length === 0) {
                 showNotification("E-mail ou senha incorretos.", "error");
             } else {
-                localStorage.setItem('usuarioLogado', JSON.stringify(data[0]));
+                const user = data[0];
+                
+                // 🔴 VERIFICAÇÃO DE BANIMENTO
+                const isBanido = user.banido === true || (user.mensagem_admin && user.mensagem_admin.includes('[BANIDO]'));
+                
+                if (isBanido) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Acesso Bloqueado',
+                        html: `<b>A sua conta foi banida.</b><br><br><span style="font-size:0.85rem; color:#64748B;">Motivo: ${user.mensagem_admin}</span>`,
+                        confirmButtonText: 'Entendido',
+                        confirmButtonColor: '#EF4444'
+                    });
+                    return; // Interrompe o processo e não deixa fazer login
+                }
+
+                // Se não estiver banido, entra normalmente
+                localStorage.setItem('usuarioLogado', JSON.stringify(user));
                 showNotification("Bem-vindo(a) de volta!", "success");
                 setTimeout(() => window.location.href = "home.html", 1000);
             }
@@ -234,6 +249,8 @@
         }
 
         let userRecData = null; 
+        
+        // --- RECUPERAÇÃO DE SENHA COM VERIFICAÇÃO DE BANIMENTO ---
         async function verificarRecuperacao() {
             if(!_supabase) return showNotification("Verifique a sua ligação à internet.", "error");
             const nome = document.getElementById('rec-nome').value.trim();
@@ -249,8 +266,25 @@
             if (error || !data || data.length === 0) {
                 showNotification("Nenhuma conta encontrada com estes dados.", "error");
             } else {
-                userRecData = data[0];
-                document.getElementById('info-detalhes').innerHTML = `<b>${data[0].nome}</b><br>${data[0].email}`;
+                const user = data[0];
+                
+                // 🔴 VERIFICAÇÃO DE BANIMENTO NA RECUPERAÇÃO
+                const isBanido = user.banido === true || (user.mensagem_admin && user.mensagem_admin.includes('[BANIDO]'));
+                
+                if (isBanido) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Acesso Bloqueado',
+                        text: 'Esta conta foi banida e não pode ser recuperada.',
+                        confirmButtonText: 'Entendido',
+                        confirmButtonColor: '#EF4444'
+                    });
+                    return; // Interrompe o processo
+                }
+
+                // Conta válida, segue para o próximo passo
+                userRecData = user;
+                document.getElementById('info-detalhes').innerHTML = `<b>${user.nome}</b><br>${user.email}`;
                 document.getElementById('recover-step-1').style.display = 'none';
                 document.getElementById('recover-step-2').style.display = 'block';
                 showNotification("Conta localizada!", "success");
