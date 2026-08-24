@@ -54,6 +54,34 @@
         .toast.error { background: var(--danger); }
         
         @media (max-width: 480px) { body { padding: 0; background: white; } .card { box-shadow: none; border-radius: 0; padding: 25px 20px; } #toast-container { top: 10px; right: 10px; left: 10px; } .toast { width: 100%; justify-content: center; } }
+
+        /* Estilos adicionados para o botão de visualizar senha */
+        .pwd-wrapper { position: relative; display: flex; align-items: center; }
+        .pwd-wrapper input { padding-right: 45px; }
+        button.toggle-pwd {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: auto;
+            background: transparent;
+            color: var(--text-muted);
+            margin: 0;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            box-shadow: none;
+        }
+        button.toggle-pwd:hover {
+            background: transparent;
+            color: var(--primary);
+            transform: translateY(-50%); /* Sobrescreve o hover global */
+        }
+        button.toggle-pwd:active {
+            transform: translateY(-50%); /* Sobrescreve o active global */
+        }
     </style>
 </head>
 <body>
@@ -74,7 +102,13 @@
             </div>
             <div class="input-group">
                 <label>Senha</label>
-                <input type="password" id="login-senha" placeholder="A sua senha secreta">
+                <!-- Input de senha com ícone adicionado -->
+                <div class="pwd-wrapper">
+                    <input type="password" id="login-senha" placeholder="A sua senha secreta">
+                    <button type="button" class="toggle-pwd" onclick="togglePassword('login-senha', this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                    </button>
+                </div>
             </div>
             <button id="btn-login" onclick="fazerLogin()">Entrar na Conta</button>
             
@@ -88,7 +122,16 @@
             <div class="input-group"><label>Nome Completo</label><input type="text" id="reg-nome" placeholder="Ex: Onésio Chipindo"></div>
             <div class="input-group"><label>Número de Telefone</label><input type="tel" id="reg-numero" placeholder="840000000"></div>
             <div class="input-group"><label>E-mail</label><input type="email" id="reg-email" placeholder="exemplo@email.com"></div>
-            <div class="input-group"><label>Senha</label><input type="password" id="reg-senha" placeholder="Crie uma senha segura"></div>
+            <div class="input-group">
+                <label>Senha</label>
+                <!-- Input de senha com ícone adicionado -->
+                <div class="pwd-wrapper">
+                    <input type="password" id="reg-senha" placeholder="Crie uma senha segura">
+                    <button type="button" class="toggle-pwd" onclick="togglePassword('reg-senha', this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                    </button>
+                </div>
+            </div>
             <button id="btn-reg" onclick="criarConta()">Criar Minha Conta</button>
             
             <div class="modern-links">
@@ -116,13 +159,35 @@
                 </div>
                 <div class="input-group">
                     <label>Nova Senha (Opcional)</label>
-                    <input type="password" id="rec-nova-senha" placeholder="Nova senha ou deixe em branco">
+                    <!-- Input de senha com ícone adicionado -->
+                    <div class="pwd-wrapper">
+                        <input type="password" id="rec-nova-senha" placeholder="Nova senha ou deixe em branco">
+                        <button type="button" class="toggle-pwd" onclick="togglePassword('rec-nova-senha', this)">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                        </button>
+                    </div>
                 </div>
                 <button id="btn-upd" onclick="atualizarSenha('update')">Atualizar Senha e Entrar</button>
                 <button onclick="atualizarSenha('keep')" class="btn-secondary">Manter Senha e Entrar</button>
             </div>
         </div>
     </div>
+
+    <!-- Script de toggle do ícone de senha -->
+    <script>
+        function togglePassword(inputId, btn) {
+            const input = document.getElementById(inputId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                // Ícone de "olho riscado" (ocultar)
+                btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>';
+            } else {
+                input.type = 'password';
+                // Ícone de "olho aberto" (visualizar)
+                btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>';
+            }
+        }
+    </script>
 
     <script>
         function switchTab(tabName) {
