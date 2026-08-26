@@ -102,7 +102,6 @@
             </div>
             <div class="input-group">
                 <label>Senha</label>
-                <!-- Input de senha com ícone adicionado -->
                 <div class="pwd-wrapper">
                     <input type="password" id="login-senha" placeholder="A sua senha secreta">
                     <button type="button" class="toggle-pwd" onclick="togglePassword('login-senha', this)">
@@ -124,10 +123,19 @@
             <div class="input-group"><label>E-mail</label><input type="email" id="reg-email" placeholder="exemplo@email.com"></div>
             <div class="input-group">
                 <label>Senha</label>
-                <!-- Input de senha com ícone adicionado -->
                 <div class="pwd-wrapper">
                     <input type="password" id="reg-senha" placeholder="Crie uma senha segura">
                     <button type="button" class="toggle-pwd" onclick="togglePassword('reg-senha', this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                    </button>
+                </div>
+            </div>
+            <!-- NOVO CAMPO: CONFIRMAR SENHA -->
+            <div class="input-group">
+                <label>Confirmar Senha</label>
+                <div class="pwd-wrapper">
+                    <input type="password" id="reg-senha-confirm" placeholder="Repita a senha">
+                    <button type="button" class="toggle-pwd" onclick="togglePassword('reg-senha-confirm', this)">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                     </button>
                 </div>
@@ -159,7 +167,6 @@
                 </div>
                 <div class="input-group">
                     <label>Nova Senha (Opcional)</label>
-                    <!-- Input de senha com ícone adicionado -->
                     <div class="pwd-wrapper">
                         <input type="password" id="rec-nova-senha" placeholder="Nova senha ou deixe em branco">
                         <button type="button" class="toggle-pwd" onclick="togglePassword('rec-nova-senha', this)">
@@ -179,11 +186,9 @@
             const input = document.getElementById(inputId);
             if (input.type === 'password') {
                 input.type = 'text';
-                // Ícone de "olho riscado" (ocultar)
                 btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>';
             } else {
                 input.type = 'password';
-                // Ícone de "olho aberto" (visualizar)
                 btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>';
             }
         }
@@ -282,13 +287,13 @@
                     return; // Interrompe o processo e não deixa fazer login
                 }
 
-                // Se não estiver banido, entra normalmente
                 localStorage.setItem('usuarioLogado', JSON.stringify(user));
                 showNotification("Bem-vindo(a) de volta!", "success");
                 setTimeout(() => window.location.href = "home.html", 1000);
             }
         }
 
+        // --- REGISTO MELHORADO (CONFIRMAÇÃO DE SENHA, VALIDAÇÃO DE DADOS E PREVENÇÃO DE DUPLICADOS) ---
         async function criarConta() {
             if(!_supabase) return showNotification("Verifique a sua ligação à internet.", "error");
 
@@ -296,16 +301,62 @@
             const numero = document.getElementById('reg-numero').value.trim();
             const email = document.getElementById('reg-email').value.trim();
             const senha = document.getElementById('reg-senha').value.trim();
+            const senhaConfirm = document.getElementById('reg-senha-confirm').value.trim();
 
-            if(!nome || !numero || !email || !senha) return showNotification("Preencha todos os campos obrigatórios.", "error");
+            if(!nome || !numero || !email || !senha || !senhaConfirm) return showNotification("Preencha todos os campos obrigatórios.", "error");
+            
+            // 0. Validação de COINCIDÊNCIA DE SENHAS
+            if(senha !== senhaConfirm) {
+                return showNotification("As senhas não coincidem. Tente novamente.", "error");
+            }
+
+            // 1. Validação de NOME (Exige pelo menos duas palavras e apenas letras/espaços)
+            const nomeRegex = /^[a-zA-ZÀ-ÿ]+\s+[a-zA-ZÀ-ÿ\s]+$/;
+            if(!nomeRegex.test(nome) || nome.length < 5) {
+                return showNotification("Introduza o seu nome e apelido reais (apenas letras).", "error");
+            }
+
+            // 2. Validação de E-MAIL (Exige formato correto com @ e domínio)
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if(!emailRegex.test(email)) {
+                return showNotification("Por favor, introduza um e-mail válido (ex: nome@dominio.com).", "error");
+            }
+
+            // 3. Validação de NÚMERO DE TELEFONE (Exatamente 9 dígitos)
+            if(numero.length !== 9 || !/^\d+$/.test(numero)) {
+                return showNotification("O número de telefone deve conter exatamente 9 dígitos.", "error");
+            }
+
             setLoading('btn-reg', true, 'Criar Minha Conta');
 
+            // Verificar se o E-MAIL já existe
+            const { data: checkEmail } = await _supabase.from('Utilizadores').select('id').eq('email', email);
+            if (checkEmail && checkEmail.length > 0) {
+                setLoading('btn-reg', false, 'Criar Minha Conta');
+                return showNotification("Este e-mail já se encontra registado. Por favor, utilize outro ou faça login.", "error");
+            }
+
+            // Verificar se o NÚMERO já existe
+            const { data: checkNum } = await _supabase.from('Utilizadores').select('id').eq('numero', numero);
+            if (checkNum && checkNum.length > 0) {
+                setLoading('btn-reg', false, 'Criar Minha Conta');
+                return showNotification("Este número de telefone já está associado a uma conta existente.", "error");
+            }
+
+            // Verificar se o NOME já existe
+            const { data: checkNome } = await _supabase.from('Utilizadores').select('id').eq('nome', nome);
+            if (checkNome && checkNome.length > 0) {
+                setLoading('btn-reg', false, 'Criar Minha Conta');
+                return showNotification("Este nome já está em uso no sistema. Recomendamos que adicione um apelido.", "error");
+            }
+
+            // Se tudo estiver correto, efetuar a criação da conta
             const { data, error } = await _supabase.from('Utilizadores').insert([{ nome, numero, email, senha }]).select();
 
             setLoading('btn-reg', false, 'Criar Minha Conta');
 
             if (error) {
-                showNotification("Este e-mail já pode estar registado.", "error");
+                showNotification("Ocorreu um erro ao comunicar com o servidor. Tente novamente.", "error");
             } else {
                 if(data && data.length > 0) { localStorage.setItem('usuarioLogado', JSON.stringify(data[0])); }
                 showNotification("Conta criada com sucesso!", "success");
@@ -344,10 +395,9 @@
                         confirmButtonText: 'Entendido',
                         confirmButtonColor: '#EF4444'
                     });
-                    return; // Interrompe o processo
+                    return; 
                 }
 
-                // Conta válida, segue para o próximo passo
                 userRecData = user;
                 document.getElementById('info-detalhes').innerHTML = `<b>${user.nome}</b><br>${user.email}`;
                 document.getElementById('recover-step-1').style.display = 'none';
@@ -374,7 +424,7 @@
 
             if (error) {
                 setLoading('btn-upd', false, 'Atualizar Senha e Entrar');
-                showNotification("Erro ao atualizar.", "error");
+                showNotification("Erro ao atualizar a senha.", "error");
             } else {
                 localStorage.setItem('usuarioLogado', JSON.stringify(data && data.length > 0 ? data[0] : userRecData));
                 showNotification("Senha atualizada com sucesso!", "success");
